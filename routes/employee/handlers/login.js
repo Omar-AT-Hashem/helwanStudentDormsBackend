@@ -1,6 +1,9 @@
 import { Router } from "express";
 
 import { Employee } from "../../../models/employee.js";
+import { Student } from "../../../models/student.js";
+import { StudentAccomodation } from "../../../models/studentAccomodation.js";
+import { Penalty } from "../../../models/penalty.js";
 
 const login = Router();
 

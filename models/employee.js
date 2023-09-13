@@ -6,7 +6,7 @@ export let Employee;
   Employee = db.define(
     "employee",
     {
-      // Model attributes are defined here
+      
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
