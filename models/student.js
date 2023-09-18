@@ -118,4 +118,4 @@ export let Student;
     }
   );
 
-  await Student.sync({ force: true });
+  await Student.sync({ alter: true });

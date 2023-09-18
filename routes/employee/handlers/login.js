@@ -4,6 +4,7 @@ import { Employee } from "../../../models/employee.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import authenticateToken from "../../../middleware/authenticateToken.js";
 
 // import { Student } from "../../../models/student.js";
 // import { StudentAccomodation } from "../../../models/studentAccomodation.js";
@@ -39,13 +40,13 @@ async function authenticate(req, res) {
           .json({ message: "Your username or password are incorrect" });
       }
       const token = jwt.sign({ userId: employee.id }, tokenSecret);
-     const returnedEmployee = {
+      const returnedEmployee = {
         id: employee.id,
         username: employee.username,
         name: employee.name,
         token: token,
       };
-      return res.status(200).json( returnedEmployee );
+      return res.status(200).json(returnedEmployee);
     }
 
     return res
@@ -56,6 +57,10 @@ async function authenticate(req, res) {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 }
+
+login.post("/test", authenticateToken, (req, res) => {
+  return res.json({ message: "token valid", id: req.userId });
+});
 
 login.post("/", authenticate);
 

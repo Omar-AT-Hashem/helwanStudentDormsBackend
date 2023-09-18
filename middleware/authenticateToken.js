@@ -6,7 +6,8 @@ dotenv.config();
 const tokenSecret = process.env.TOKEN_SECRET;
 
 function authenticateToken(req, res, next) {
-  const token = req.header("Authorization");
+  const token = req.header("Authorization").split(" ")[1];
+  
 
   if (!token) {
     return res
@@ -23,3 +24,5 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
+export default authenticateToken
