@@ -1,8 +1,7 @@
 import Express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
-
-
+import conn from "./config/db.js"
 
 import apiRoutes from "./routes/apiRoutes.js"
 

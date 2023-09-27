@@ -1,12 +1,9 @@
 // import { Sequelize, DataTypes } from "sequelize";
-// import { db } from "../config/db.js";
+// import { db } from "../../config/db.js";
 
-// export let Employee;
-
-//   Employee = db.define(
-//     "employee",
+//   export const Building = db.define(
+//     "building",
 //     {
-      
 //       id: {
 //         type: DataTypes.INTEGER,
 //         autoIncrement: true,
@@ -15,18 +12,19 @@
 //       name: {
 //         type: DataTypes.STRING,
 //         allowNull: false,
-//       },
-//       username: {
-//         type: DataTypes.STRING,
-//         allowNull: false,
-//       },
-//       password: {
-//         type: DataTypes.STRING,
-//         allowNull: false,
-//       },
+//       }
 //     },
 //     {
 //       timestamps: false,
 //     }
 //   );
 
+ 
+
+  
+
+
+
+  
+
+  

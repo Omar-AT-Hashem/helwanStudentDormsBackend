@@ -1,14 +1,11 @@
 import { Router } from "express";
 
-import { Employee } from "../../../models/employee.js";
+import conn from "../../../config/db.js";
+
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authenticateToken from "../../../middleware/authenticateToken.js";
-
-// import { Student } from "../../../models/student.js";
-// import { StudentAccomodation } from "../../../models/studentAccomodation.js";
-// import { Penalty } from "../../../models/penalty.js";
 
 dotenv.config();
 
@@ -26,14 +23,14 @@ async function authenticate(req, res) {
   }
 
   try {
-    const employee = await Employee.findOne({
-      where: {
-        username: username,
-      },
-    });
+    const employee = await conn.awaitQuery(
+      "SELECT * FROM employees WHERE username = ?",
+      [username]
+    );
+    
 
-    if (employee) {
-      const passwordMatch = await bcrypt.compare(password, employee.password);
+    if (employee.length > 0) {
+      const passwordMatch = await bcrypt.compare(password, employee[0].password);
       if (!passwordMatch) {
         return res
           .status(401)
@@ -41,9 +38,9 @@ async function authenticate(req, res) {
       }
       const token = jwt.sign({ userId: employee.id }, tokenSecret);
       const returnedEmployee = {
-        id: employee.id,
-        username: employee.username,
-        name: employee.name,
+        id: employee[0].id,
+        username: employee[0].username,
+        name: employee[0].name,
         token: token,
       };
       return res.status(200).json(returnedEmployee);
