@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./index.js",
-    "db-build": "node ./dbBuilder.js"
+    "db-migrate": "node ./dbBuilder.js"
     
   },
   "keywords": [],
