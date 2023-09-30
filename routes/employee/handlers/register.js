@@ -1,6 +1,5 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import conn from "../../../config/db.js";
 
@@ -9,7 +8,6 @@ dotenv.config();
 
 const register = Router();
 
-const tokenSecret = process.env.TOKEN_SECRET;
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 async function createEmployee(req, res) {
@@ -23,7 +21,7 @@ async function createEmployee(req, res) {
     }
 
     // Check if the user already exists
-    const existingUser = await await conn.awaitQuery("SELECT * FROM employees WHERE username = ?", [username])
+    const existingUser = await conn.awaitQuery("SELECT * FROM employees WHERE username = ?", [username])
     if (existingUser.length > 0) {
         
       return res.status(400).json({ message: "User already exists" });
@@ -37,9 +35,8 @@ async function createEmployee(req, res) {
 
 
     // Create a JWT token
-    const token = jwt.sign({ userId: newEmployee.insertId }, tokenSecret);
 
-    res.status(201).json({ token });
+    res.status(201).json({ message: "User created" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });

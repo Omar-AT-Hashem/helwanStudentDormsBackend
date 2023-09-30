@@ -1,26 +1,20 @@
 import conn from "./config/db.js";
 
-await conn.awaitQuery(
-  "CREATE TABLE employees (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name VARCHAR(100) NOT NULL, username VARCHAR(100), password VARCHAR(100));"
-);
+// await conn.awaitQuery(
+//   "CREATE TABLE employees (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,name VARCHAR(100) , username VARCHAR(100), password VARCHAR(100));"
+// );
+
+// await conn.awaitQuery(
+//   "CREATE TABLE buildings (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) );"
+// );
+
+// await conn.awaitQuery(
+//   "CREATE TABLE floors (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, number INT, buildingId INT , FOREIGN KEY (buildingId) REFERENCES buildings(id) ON DELETE CASCADE);"
+// );
 
 await conn.awaitQuery(
-  "CREATE TABLE buildings (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL);"
+  "CREATE TABLE students (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(120) , image VARCHAR(255), nationalId VARCHAR(50) , fileNumber VARCHAR(80) , studentCode VARCHAR(255) , religion VARCHAR(50) , email VARCHAR(120) , telephone VARCHAR(50) , mobile VARCHAR(50) , fatherName VARCHAR(120) , fatherOccupation VARCHAR(120) , fatherNationalId VARCHAR(50) , fatherPhone VARCHAR(50) , guardianName VARCHAR(120) , guardianNationalId VARCHAR(50) ,  guardianRelationShip VARCHAR(80) , placeOfResidency VARCHAR(120) , address VARCHAR(255) , faculty VARCHAR(150) , gradeAssessment VARCHAR(120), gradePercentage VARCHAR(20), accomodationType VARCHAR(100), familyAbroad INT , acceptanceStatus INT , accomodationWithNutrition INT, addressDetails VARCHAR(255), dateOfApplying VARCHAR(255), password VARCHAR(255), isDisabled INT );"
 );
-
-await conn.awaitQuery(
-  "CREATE TABLE floors (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, number INT, buildingId INT NOT NULL, FOREIGN KEY (buildingId) REFERENCES buildings(id) ON DELETE CASCADE);"
-);
-
-await conn.awaitQuery(
-  "CREATE TABLE students (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(120) NOT NULL, image VARCHAR(255), nationalId VARCHAR(50) NOT NULL, fileNumber VARCHAR(80) NOT NULL, studentCode VARCHAR(255) NOT NULL, religion VARCHAR(50) NOT NULL, email VARCHAR(120) NOT NULL, telephone VARCHAR(50) NOT NULL, mobile VARCHAR(50) NOT NULL, fatherName VARCHAR(120) NOT NULL, fatherOccupation VARCHAR(120) NOT NULL, fatherNationalId VARCHAR(50) NOT NULL, fatherPhone VARCHAR(50) NOT NULL, guardianName VARCHAR(120) NOT NULL, guardianNationalId VARCHAR(50) NOT NULL,  guardianRelationShip VARCHAR(80) NOT NULL, placeOfResidency VARCHAR(120) NOT NULL, address VARCHAR(255) NOT NULL, faculty VARCHAR(150) NOT NULL, gradeAssessment VARCHAR(120), gradePercentage VARCHAR(20), accomodationType VARCHAR(100), familyAbroad INT NOT NULL, acceptanceStatus INT NOT NULL, accomodationWithNutrition INT NOT NULL);"
-);
-
-
-
-
-
-
 
 // await conn.awaitQuery(
 //   `INSERT INTO students (name, image, nationalId, fileNumber, studentCode, religion, email, telephone, mobile, fatherName, fatherOccupation, fatherNationalId, fatherPhone, guardianName, guardianNationalId, guardianRelationShip, placeOfResidency, address, faculty, gradeAssessment, gradePercentage, accomodationType, familyAbroad, acceptanceStatus, accomodationWithNutrition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,

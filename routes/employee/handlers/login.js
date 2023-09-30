@@ -27,16 +27,18 @@ async function authenticate(req, res) {
       "SELECT * FROM employees WHERE username = ?",
       [username]
     );
-    
 
     if (employee.length > 0) {
-      const passwordMatch = await bcrypt.compare(password, employee[0].password);
+      const passwordMatch = await bcrypt.compare(
+        password,
+        employee[0].password
+      );
       if (!passwordMatch) {
         return res
           .status(401)
           .json({ message: "Your username or password are incorrect" });
       }
-      const token = jwt.sign({ userId: employee.id }, tokenSecret);
+      const token = jwt.sign({ userId: employee[0].id }, tokenSecret);
       const returnedEmployee = {
         id: employee[0].id,
         username: employee[0].username,
@@ -45,7 +47,6 @@ async function authenticate(req, res) {
       };
       return res.status(200).json(returnedEmployee);
     }
-
     return res
       .status(401)
       .json({ message: "Your username or password are incorrect" });
