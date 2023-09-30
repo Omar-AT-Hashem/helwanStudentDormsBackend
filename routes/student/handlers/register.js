@@ -62,7 +62,6 @@ async function createEmployee(req, res) {
       guardianRelationship,
       residence,
       addressDetails,
-      dateOfApplying,
       isDisabled,
       familyAbroad,
       apartmentType,
@@ -85,7 +84,6 @@ async function createEmployee(req, res) {
       !guardianRelationship ||
       !residence ||
       !addressDetails ||
-      !dateOfApplying ||
       !isDisabled ||
       !familyAbroad ||
       !apartmentType ||
@@ -108,6 +106,7 @@ async function createEmployee(req, res) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const imageName = image.destination.replaceAll("\\", "/") + image.filename;
+
     // Create a new user
     const newStudent = await conn.awaitQuery(
       "INSERT INTO students (nationalId, image, name, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherPhone, guardianName, guardianRelationship, placeOfResidency, addressDetails, dateOfApplying, isDisabled, familyAbroad, accomodationType, password) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -127,7 +126,7 @@ async function createEmployee(req, res) {
         guardianRelationship,
         residence,
         addressDetails,
-        dateOfApplying,
+        new Date(Date.now()).toLocaleString("en-GB").split(',')[0],
         parseInt(isDisabled),
         parseInt(familyAbroad),
         apartmentType,
