@@ -47,7 +47,7 @@ async function update(req, res) {
         .json({ message: "Please provide all the required fields" });
     }
 
-     await conn.awaitQuery(
+    await conn.awaitQuery(
       "UPDATE instructions SET instruction = ? WHERE id = ?",
       [instruction, id]
     );

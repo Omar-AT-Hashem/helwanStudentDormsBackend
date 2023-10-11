@@ -12,16 +12,17 @@ import conn from "./config/db.js";
 //   "CREATE TABLE floors (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, number INT, buildingId INT , FOREIGN KEY (buildingId) REFERENCES buildings(id) ON DELETE CASCADE);"
 // );
 
+await conn.awaitQuery(
+  "CREATE TABLE students (id INT AUTO_INCREMENT PRIMARY KEY, nationalId VARCHAR(20), name VARCHAR(100), birthday VARCHAR(10), placeOfBirth VARCHAR(100),image VARCHAR(400) , gender VARCHAR(10), telephone VARCHAR(20), mobile VARCHAR(20), email VARCHAR(100), religion VARCHAR(50), faculty VARCHAR(100), fatherName VARCHAR(100), fatherNationalId VARCHAR(20), fatherOccupation VARCHAR(100), fatherNumber VARCHAR(20), guardianName VARCHAR(100), guardianNationalId VARCHAR(20), guardianRelationship VARCHAR(50), residence VARCHAR(100), addressDetails VARCHAR(1000), isDisabled INT, familyAbroad INT, highschoolAbroad INT, highschoolSpecialization VARCHAR(100), highschoolGrade VARCHAR(10), accomodationType VARCHAR(50), accomodationWithNutrition INT, password VARCHAR(255), username VARCHAR(100), isApproved INT);"
+);
+
 // await conn.awaitQuery(
-//   "CREATE TABLE students (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(120) , image VARCHAR(255), nationalId VARCHAR(50) , fileNumber VARCHAR(80) , studentCode VARCHAR(255) , religion VARCHAR(50) , email VARCHAR(120) , telephone VARCHAR(50) , mobile VARCHAR(50) , fatherName VARCHAR(120) , fatherOccupation VARCHAR(120) , fatherNationalId VARCHAR(50) , fatherPhone VARCHAR(50) , guardianName VARCHAR(120) , guardianNationalId VARCHAR(50) ,  guardianRelationShip VARCHAR(80) , placeOfResidency VARCHAR(120) , address VARCHAR(255) , faculty VARCHAR(150) , gradeAssessment VARCHAR(120), gradePercentage VARCHAR(20), accomodationType VARCHAR(100), familyAbroad INT , acceptanceStatus INT , accomodationWithNutrition INT, addressDetails VARCHAR(255), dateOfApplying VARCHAR(255), password VARCHAR(255), isDisabled INT );"
+//   "CREATE TABLE instructions (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, instruction VARCHAR(400));"
 // );
 
-await conn.awaitQuery(
-  "CREATE TABLE instructions (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, instruction VARCHAR(400));"
-);
-await conn.awaitQuery(
-  "CREATE TABLE applicationdates (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, dates VARCHAR(400));"
-);
+// await conn.awaitQuery(
+//   "CREATE TABLE applicationdates (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, studentType VARCHAR(50), fromDate VARCHAR(100), toDate VARCHAR(100));"
+// );
 
 // await conn.awaitQuery(
 //   `INSERT INTO students (name, image, nationalId, fileNumber, studentCode, religion, email, telephone, mobile, fatherName, fatherOccupation, fatherNationalId, fatherPhone, guardianName, guardianNationalId, guardianRelationShip, placeOfResidency, address, faculty, gradeAssessment, gradePercentage, accomodationType, familyAbroad, acceptanceStatus, accomodationWithNutrition) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -62,7 +63,7 @@ await conn.awaitQuery(
 //     "9876543210",
 //     "F54321",
 //     "S987123",
-//     "Buddhist",
+//     "Muslim",
 //     "another.student@example.com",
 //     "555-555-5555",
 //     "555-123-9876",

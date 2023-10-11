@@ -2,40 +2,40 @@ import { Router } from "express";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import conn from "../../../config/db.js";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
+// import path from "path";
+// import { fileURLToPath } from "url";
+// import fs from "fs";
 
-import multer from "multer";
+// import multer from "multer";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const uploadPath = path.join(
-  __dirname,
-  "..",
-  "..",
-  "..",
-  "..",
-  "images",
-  "/"
-);
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// export const uploadPath = path.join(
+//   __dirname,
+//   "..",
+//   "..",
+//   "..",
+//   "..",
+//   "images",
+//   "/"
+// );
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    fs.mkdirSync(uploadPath, { recursive: true });
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      file.originalname.split(".")[0] +
-        Date.now() +
-        "." +
-        file.originalname.split(".")[file.originalname.split(".").length - 1]
-    );
-  },
-});
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     fs.mkdirSync(uploadPath, { recursive: true });
+//     cb(null, uploadPath);
+//   },
+//   filename: function (req, file, cb) {
+//     cb(
+//       null,
+//       file.originalname.split(".")[0] +
+//         Date.now() +
+//         "." +
+//         file.originalname.split(".")[file.originalname.split(".").length - 1]
+//     );
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 dotenv.config();
 
@@ -45,13 +45,16 @@ const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 async function createEmployee(req, res) {
   try {
-    const image = req.file;
+    // const image = req.file;
     const {
       nationalId,
       name,
+      birthday,
+      placeOfBirth,
+      gender,
+      telephone,
       mobile,
       email,
-      address,
       religion,
       faculty,
       fatherName,
@@ -59,21 +62,29 @@ async function createEmployee(req, res) {
       fatherOccupation,
       fatherNumber,
       guardianName,
+      guardianNationalId,
       guardianRelationship,
       residence,
       addressDetails,
       isDisabled,
       familyAbroad,
-      apartmentType,
+      highschoolAbroad,
+      highschoolSpecialization,
+      highschoolGrade,
+      accomodationType,
+      accomodationWithNutrition,
       password,
     } = req.body;
 
     if (
       !nationalId ||
       !name ||
+      !birthday ||
+      !placeOfBirth ||
+      !gender ||
+      !telephone ||
       !mobile ||
       !email ||
-      !address ||
       !religion ||
       !faculty ||
       !fatherName ||
@@ -81,12 +92,13 @@ async function createEmployee(req, res) {
       !fatherOccupation ||
       !fatherNumber ||
       !guardianName ||
+      !guardianNationalId ||
       !guardianRelationship ||
       !residence ||
       !addressDetails ||
-      !isDisabled ||
-      !familyAbroad ||
-      !apartmentType ||
+      !highschoolSpecialization ||
+      !highschoolGrade ||
+      !accomodationType ||
       !password
     ) {
       return res
@@ -100,20 +112,26 @@ async function createEmployee(req, res) {
       [nationalId]
     );
     if (existingUser.length > 0) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(409).json({ message: "User already exists" });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const imageName = image.destination.replaceAll("\\", "/") + image.filename;
+    // const imageName = image.destination.replaceAll("\\", "/") + image.filename;
+    const username = nationalId
+    const isApproved = 0
 
+    
     // Create a new user
     const newStudent = await conn.awaitQuery(
-      "INSERT INTO students (nationalId, image, name, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherPhone, guardianName, guardianRelationship, placeOfResidency, addressDetails, dateOfApplying, isDisabled, familyAbroad, accomodationType, password) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO students (name, birthday,nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, highschoolGrade, accomodationType, accomodationWithNutrition, password, username, isApproved) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
       [
-        nationalId,
-        imageName,
         name,
+        birthday,
+        nationalId,
+        placeOfBirth,
+        gender,
+        telephone,
         mobile,
         email,
         religion,
@@ -123,14 +141,20 @@ async function createEmployee(req, res) {
         fatherOccupation,
         fatherNumber,
         guardianName,
+        guardianNationalId,
         guardianRelationship,
         residence,
         addressDetails,
-        new Date(Date.now()).toLocaleString("en-GB").split(',')[0],
         parseInt(isDisabled),
         parseInt(familyAbroad),
-        apartmentType,
+        parseInt(highschoolAbroad),
+        highschoolSpecialization,
+        highschoolGrade,
+        accomodationType,
+        parseInt(accomodationWithNutrition),
         hashedPassword,
+        username,
+        isApproved,
       ]
     );
 
@@ -141,6 +165,7 @@ async function createEmployee(req, res) {
   }
 }
 
-register.post("/", upload.single("image"), createEmployee);
+// register.post("/", upload.single("image"), createEmployee);
+register.post("/", createEmployee);
 
 export default register;
