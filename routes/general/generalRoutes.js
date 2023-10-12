@@ -1,15 +1,18 @@
 import { Router } from "express"
 
-import instructions from "./handlers/instructions.js"
-import applicationDates from "./handlers/applicationDates.js"
+import instruction from "./handlers/instruction.js"
+import applicationDate from "./handlers/applicationDate.js"
+import student from "./handlers/student.js"
+import employee from "./handlers/employee.js"
 
 const generalRoutes = Router()
 
 
 
-generalRoutes.use("/instructions", instructions)
-generalRoutes.use("/application-dates", applicationDates)
-
+generalRoutes.use("/instruction", instruction)
+generalRoutes.use("/application-date", applicationDate)
+generalRoutes.use("/student", student)
+generalRoutes.use("/employee", employee)
 
 
 export default generalRoutes

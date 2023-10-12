@@ -7,13 +7,51 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authenticateToken from "../../../middleware/authenticateToken.js";
 
+
 dotenv.config();
 
-const login = Router();
+const employee = Router();
 
 const tokenSecret = process.env.TOKEN_SECRET;
+const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
-async function authenticate(req, res) {
+
+
+async function register(req, res) {
+  try {
+    const { username, name, password } = req.body;
+
+    if (!username || !password || !name) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
+
+    // Check if the user already exists
+    const existingUser = await conn.awaitQuery("SELECT * FROM employees WHERE username = ?", [username])
+    if (existingUser.length > 0) {
+        
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create a new user
+    const newEmployee = await conn.awaitQuery("INSERT INTO employees (username, name, password) VALUES (?,?,?)", [username, name, hashedPassword])
+
+
+    // Create a JWT token
+
+    res.status(201).json({ message: "User created" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+
+async function login(req, res) {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -56,10 +94,9 @@ async function authenticate(req, res) {
   }
 }
 
-login.post("/test", authenticateToken, (req, res) => {
-  return res.json({ message: "token valid", id: req.userId });
-});
 
-login.post("/", authenticate);
 
-export default login;
+employee.post("/login", login);
+employee.post("/register", register);
+
+export default employee;
