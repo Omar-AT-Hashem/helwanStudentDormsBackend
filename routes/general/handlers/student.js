@@ -52,6 +52,8 @@ const student = Router();
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 const tokenSecret = process.env.TOKEN_SECRET_STUDENT;
 
+//----------------------------------------------------------------
+
 async function index(req, res) {
   try {
     const students = await conn.awaitQuery("SELECT * FROM students");
@@ -61,24 +63,7 @@ async function index(req, res) {
   }
 }
 
-
-async function getStudentById(req, res) {
-  const { studentId } = req.params;
-
-  if (!studentId) {
-    return res.status(400).json({ message: "Please provide a studentId" });
-  }
-
-  try {
-    const student = await conn.awaitQuery(
-      "SELECT * FROM students WHERE id = ? ",
-      [studentId]
-    );
-    return res.status(200).json(student[0]);
-  } catch (err) {
-    return res.status(500).json({ message: "Something went wrong" });
-  }
-}
+//----------------------------------------------------------------
 
 async function register(req, res) {
   try {
@@ -201,6 +186,9 @@ async function register(req, res) {
     res.status(500).json({ message: "Server Error" });
   }
 }
+//---------------------------------------------------------------------
+
+
 
 async function login(req, res) {
   const { username, password } = req.body;
@@ -245,14 +233,58 @@ async function login(req, res) {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 }
+//----------------------------------------------------------------
+
+async function getStudentById(req, res) {
+  const { studentId } = req.params;
+
+  if (!studentId) {
+    return res.status(400).json({ message: "Please provide a studentId" });
+  }
+
+  try {
+    const student = await conn.awaitQuery(
+      "SELECT * FROM students WHERE id = ? ",
+      [studentId]
+    );
+    return res.status(200).json(student[0]);
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+//----------------------------------------------------------------
+
+
+async function getStudentByNationalId(req, res) {
+  const { studentNationalId } = req.params;
+
+  if (!studentNationalId) {
+    return res.status(400).json({ message: "Please provide a studentNationalId" });
+  }
+
+  try {
+    const student = await conn.awaitQuery(
+      "SELECT * FROM students WHERE nationalId = ? ",
+      [studentNationalId]
+    );
+    return res.status(200).json(student[0]);
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+//----------------------------------------------------------------
 
 
 
+
+
+//----------------------------------------------------------------
 student.post("/login", login);
 
 // register.post("/", upload.single("image"), createEmployee);
 student.post("/regitser", register);
 student.get("/", index);
 student.get("/get-by-id/:studentId", getStudentById);
+student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
 
 export default student;

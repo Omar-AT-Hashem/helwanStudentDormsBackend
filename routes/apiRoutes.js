@@ -5,6 +5,6 @@ import generalRoutes from "./general/generalRoutes.js"
 const apiRoutes = Router()
 
 
-apiRoutes.use("/api", generalRoutes)
+apiRoutes.use("/v1", generalRoutes)
 
 export default apiRoutes
