@@ -6,46 +6,44 @@ import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authenticateToken from "../../../middleware/authenticateToken.js";
-// import path from "path";
-// import { fileURLToPath } from "url";
-// import fs from "fs";
 
-// import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
-dotenv.config()
+import multer from "multer";
 
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// export const uploadPath = path.join(
-//   __dirname,
-//   "..",
-//   "..",
-//   "..",
-//   "..",
-//   "images",
-//   "/"
-// );
+dotenv.config();
 
-// var storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     fs.mkdirSync(uploadPath, { recursive: true });
-//     cb(null, uploadPath);
-//   },
-//   filename: function (req, file, cb) {
-//     cb(
-//       null,
-//       file.originalname.split(".")[0] +
-//         Date.now() +
-//         "." +
-//         file.originalname.split(".")[file.originalname.split(".").length - 1]
-//     );
-//   },
-// });
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+export const uploadPath = path.join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "..",
+  "helwanStudentDormsFrontend",
+  "public",
+  "/"
+);
 
-// const upload = multer({ storage: storage });
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.originalname.split(".")[0] +
+        Date.now() +
+        "." +
+        file.originalname.split(".")[file.originalname.split(".").length - 1]
+    );
+  },
+});
 
-
-
-
+const upload = multer({ storage: storage });
 
 const student = Router();
 
@@ -67,7 +65,6 @@ async function index(req, res) {
 
 async function register(req, res) {
   try {
-    // const image = req.file;
     const {
       nationalId,
       name,
@@ -140,10 +137,9 @@ async function register(req, res) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     // const imageName = image.destination.replaceAll("\\", "/") + image.filename;
-    const username = nationalId
-    const isApproved = 0
+    const username = nationalId;
+    const isApproved = 0;
 
-    
     // Create a new user
     const newStudent = await conn.awaitQuery(
       "INSERT INTO students (name, birthday,nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, highschoolGrade, accomodationType, accomodationWithNutrition, password, username, isApproved) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
@@ -188,8 +184,6 @@ async function register(req, res) {
 }
 //---------------------------------------------------------------------
 
-
-
 async function login(req, res) {
   const { username, password } = req.body;
 
@@ -206,10 +200,7 @@ async function login(req, res) {
     );
 
     if (student.length > 0) {
-      const passwordMatch = await bcrypt.compare(
-        password,
-        student[0].password
-      );
+      const passwordMatch = await bcrypt.compare(password, student[0].password);
       if (!passwordMatch) {
         return res
           .status(401)
@@ -254,12 +245,13 @@ async function getStudentById(req, res) {
 }
 //----------------------------------------------------------------
 
-
 async function getStudentByNationalId(req, res) {
   const { studentNationalId } = req.params;
 
   if (!studentNationalId) {
-    return res.status(400).json({ message: "Please provide a studentNationalId" });
+    return res
+      .status(400)
+      .json({ message: "Please provide a studentNationalId" });
   }
 
   try {
@@ -274,17 +266,144 @@ async function getStudentByNationalId(req, res) {
 }
 //----------------------------------------------------------------
 
+async function update(req, res) {
+  try {
+    const {
+      nationalId,
+      name,
+      birthday,
+      placeOfBirth,
+      gender,
+      telephone,
+      mobile,
+      email,
+      religion,
+      faculty,
+      fatherName,
+      fatherNationalId,
+      fatherOccupation,
+      fatherNumber,
+      guardianName,
+      guardianNationalId,
+      guardianRelationship,
+      residence,
+      addressDetails,
+      isDisabled,
+      familyAbroad,
+      highschoolAbroad,
+      highschoolSpecialization,
+      highschoolGrade,
+      accomodationType,
+      accomodationWithNutrition,
+      password,
+      id,
+    } = req.body;
 
+    // if (!instruction || !id) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Please provide all the required fields" });
+    // }
 
+    const nationalIdCheck = await conn.awaitQuery(
+      "SELECT * from students WHERE nationalId = ?",
+      [nationalId]
+    );
 
+    const currentStudent = await conn.awaitQuery(
+      "SELECT * from students WHERE id = ?",
+      [id]
+    );
+
+    if (
+      nationalIdCheck.length > 0 &&
+      nationalId != currentStudent[0].nationalId
+    ) {
+      return res.status(409).json({ message: "The nationalId already exists" });
+    }
+
+    await conn.awaitQuery(
+      "UPDATE students SET nationalId = ?, name = ?, birthday = ?, placeOfBirth = ?, gender = ?, telephone = ?, mobile = ?, email = ?, religion = ?, faculty = ?, fatherName = ?, fatherNationalId = ?, fatherOccupation = ?, fatherNumber = ?, guardianName = ?, guardianNationalId = ?, guardianRelationship = ?, residence = ?, addressDetails = ?, isDisabled = ?, familyAbroad = ?, highschoolAbroad = ?, highschoolSpecialization = ?, highschoolGrade = ?, accomodationType = ?, accomodationWithNutrition = ? WHERE id = ?;",
+      [
+        nationalId,
+        name,
+        birthday,
+        placeOfBirth,
+        gender,
+        telephone,
+        mobile,
+        email,
+        religion,
+        faculty,
+        fatherName,
+        fatherNationalId,
+        fatherOccupation,
+        fatherNumber,
+        guardianName,
+        guardianNationalId,
+        guardianRelationship,
+        residence,
+        addressDetails,
+        isDisabled,
+        familyAbroad,
+        highschoolAbroad,
+        highschoolSpecialization,
+        highschoolGrade,
+        accomodationType,
+        accomodationWithNutrition,
+        id,
+      ]
+    );
+
+    res.status(201).json({ message: "student Updated" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+//----------------------------------------------------------------
+async function updateImage(req, res) {
+  try {
+    const image = req.file;
+    const { id } = req.body;
+    const imagePath = `/${image.filename}`;
+
+    await conn.awaitQuery("UPDATE students SET image = ?  WHERE id = ?;", [
+      imagePath,
+      id,
+    ]);
+
+    res.status(201).json({ message: "student Updated" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+//----------------------------------------------------------------
+async function deleteImage(req, res) {
+  try {
+    const imagePath = "/default-photo.jpg";
+    const { id } = req.body;
+    await conn.awaitQuery("UPDATE students SET image = ?  WHERE id = ?;", [
+      imagePath,
+      id,
+    ]);
+    res.status(201).json({ message: "student Updated" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
 
 //----------------------------------------------------------------
-student.post("/login", login);
 
-// register.post("/", upload.single("image"), createEmployee);
-student.post("/regitser", register);
 student.get("/", index);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
+student.post("/login", login);
+student.post("/regitser", register);
+student.put("/update-image", upload.single("image"), updateImage);
+student.put("/delete-image", deleteImage);
+student.put("/", update);
 
 export default student;

@@ -6,6 +6,8 @@ import conn from "../../../config/db.js";
 
 const applicationDates = Router();
 
+//----------------------------------------------------------------
+
 async function index(req, res) {
   try {
     const students = await conn.awaitQuery("SELECT * FROM applicationdates");
@@ -14,6 +16,8 @@ async function index(req, res) {
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
+
+//----------------------------------------------------------------
 
 async function create(req, res) {
   try {
@@ -39,6 +43,10 @@ async function create(req, res) {
   }
 }
 
+
+//----------------------------------------------------------------
+
+
 async function update(req, res) {
   try {
     const { id, instruction } = req.body;
@@ -61,6 +69,8 @@ async function update(req, res) {
   }
 }
 
+//----------------------------------------------------------------
+
 async function deleteById(req, res) {
   const instructionId = req.params.id;
   try {
@@ -74,6 +84,8 @@ async function deleteById(req, res) {
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
+
+//----------------------------------------------------------------
 
 
 

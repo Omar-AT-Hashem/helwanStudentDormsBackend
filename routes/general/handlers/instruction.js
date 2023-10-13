@@ -4,6 +4,8 @@ import authenticateToken from "../../../middleware/authenticateToken.js";
 
 const instructions = Router();
 
+//----------------------------------------------------------------
+
 async function index(req, res) {
   try {
     const students = await conn.awaitQuery("SELECT * FROM instructions");
@@ -12,6 +14,8 @@ async function index(req, res) {
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
+
+//----------------------------------------------------------------
 
 async function create(req, res) {
   try {
@@ -37,6 +41,8 @@ async function create(req, res) {
   }
 }
 
+//----------------------------------------------------------------
+
 async function update(req, res) {
   try {
     const { id, instruction } = req.body;
@@ -59,6 +65,8 @@ async function update(req, res) {
   }
 }
 
+//----------------------------------------------------------------
+
 async function deleteById(req, res) {
   const instructionId = req.params.id;
   try {
@@ -72,6 +80,8 @@ async function deleteById(req, res) {
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
+
+//----------------------------------------------------------------
 
 instructions.get("/", index);
 instructions.post("/", create);

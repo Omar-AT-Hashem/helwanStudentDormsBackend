@@ -15,7 +15,7 @@ const employee = Router();
 const tokenSecret = process.env.TOKEN_SECRET;
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
-
+//----------------------------------------------------------------
 
 async function register(req, res) {
   try {
@@ -49,6 +49,8 @@ async function register(req, res) {
     res.status(500).json({ message: "Server Error" });
   }
 }
+
+//----------------------------------------------------------------
 
 
 async function login(req, res) {
@@ -93,6 +95,8 @@ async function login(req, res) {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 }
+
+//----------------------------------------------------------------
 
 
 
