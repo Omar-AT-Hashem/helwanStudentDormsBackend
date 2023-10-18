@@ -65,6 +65,7 @@ async function index(req, res) {
 
 async function register(req, res) {
   try {
+    console.log(req.body);
     const {
       nationalId,
       name,
@@ -401,7 +402,7 @@ student.get("/", index);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
 student.post("/login", login);
-student.post("/regitser", register);
+student.post("/register", register);
 student.put("/update-image", upload.single("image"), updateImage);
 student.put("/delete-image", deleteImage);
 student.put("/", update);
