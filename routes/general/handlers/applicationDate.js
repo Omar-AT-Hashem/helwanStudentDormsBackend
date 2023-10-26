@@ -1,10 +1,7 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
 
-
-
-
-const applicationDates = Router();
+const applicationDate = Router();
 
 //----------------------------------------------------------------
 
@@ -21,45 +18,43 @@ async function index(req, res) {
 
 async function create(req, res) {
   try {
-    const { instruction } = req.body;
+    const { startDate, endDate, studentType } = req.body;
 
-    if (!instruction) {
+    if (!startDate || !endDate || !studentType) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
     const created = await conn.awaitQuery(
-      "INSERT INTO instructions (instruction) VALUES (?)",
-      [instruction]
+      "INSERT INTO applicationdates (startDate, endDate, studentType) VALUES (?,?,?)",
+      [startDate, endDate, studentType]
     );
 
     res
       .status(201)
-      .json({ message: "instruction created", id: created.insertId });
+      .json({ message: "Application Date created", id: created.insertId });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 }
 
-
 //----------------------------------------------------------------
-
 
 async function update(req, res) {
   try {
-    const { id, instruction } = req.body;
+    const { id, studentType, startDate, endDate } = req.body;
 
-    if (!instruction || !id) {
+    if (!studentType || !startDate || !endDate || !id) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
     await conn.awaitQuery(
-      "UPDATE instructions SET instruction = ? WHERE id = ?",
-      [instruction, id]
+      "UPDATE applicationdates SET studentType = ?, startDate = ?, endDate = ? WHERE id = ?",
+      [studentType, startDate, endDate, id]
     );
 
     res.status(201).json({ message: "instruction Updated" });
@@ -72,13 +67,13 @@ async function update(req, res) {
 //----------------------------------------------------------------
 
 async function deleteById(req, res) {
-  const instructionId = req.params.id;
+  const dateId = req.params.id;
   try {
-    await conn.awaitQuery("DELETE FROM instructions WHERE id = ?", [
-      instructionId,
+    await conn.awaitQuery("DELETE FROM applicationdates WHERE id = ?", [
+      dateId,
     ]);
     return res.status(200).json({
-      message: `Instruction with Id = ${instructionId} was deleted successfully`,
+      message: `date with Id = ${instructionId} was deleted successfully`,
     });
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
@@ -87,9 +82,9 @@ async function deleteById(req, res) {
 
 //----------------------------------------------------------------
 
+applicationDate.get("/", index);
+applicationDate.post("/", create);
+applicationDate.delete("/:id", deleteById);
+applicationDate.put("/", update);
 
-
-applicationDates.get("/",  index);
-
-
-export default applicationDates;
+export default applicationDate;
