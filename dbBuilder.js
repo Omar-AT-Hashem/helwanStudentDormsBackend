@@ -24,5 +24,10 @@ import conn from "./config/db.js";
 //   "CREATE TABLE applicationdates (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, studentType VARCHAR(50), startDate VARCHAR(100), endDate VARCHAR(100));"
 // );
 
+// await conn.awaitQuery(
+//   "CREATE TABLE categories (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), governorate VARCHAR(100));"
+// );
+
+
 
 process.exit(0);
