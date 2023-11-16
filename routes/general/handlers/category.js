@@ -20,7 +20,7 @@ async function create(req, res) {
   try {
     const { name, governorate } = req.body;
 
-    if (!name || !governorate ) {
+    if (!name || !governorate) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
@@ -31,9 +31,7 @@ async function create(req, res) {
       [name, governorate]
     );
 
-    res
-      .status(201)
-      .json({ message: "Catagory created", id: created.insertId });
+    res.status(201).json({ message: "Catagory created", id: created.insertId });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -69,17 +67,14 @@ async function update(req, res) {
 async function deleteById(req, res) {
   const id = req.params.id;
   try {
-    await conn.awaitQuery("DELETE FROM categories WHERE id = ?", [
-      id,
-    ]);
+    await conn.awaitQuery("DELETE FROM categories WHERE id = ?", [id]);
     return res.status(200).json({
       message: `date with Id = ${instructionId} was deleted successfully`,
     });
-  } catch (err) {
-    return res.status(500).json({ message: "Something went wrong" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 }
-
 //----------------------------------------------------------------
 
 category.get("/", index);

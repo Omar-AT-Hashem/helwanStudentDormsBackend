@@ -62,10 +62,20 @@ async function index(req, res) {
 }
 
 //----------------------------------------------------------------
+async function indexUnapproved(req, res) {
+  try {
+    const students = await conn.awaitQuery(
+      "SELECT * FROM students WHERE isApproved = 0"
+    );
+    return res.status(200).json(students);
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+//----------------------------------------------------------------
 
 async function register(req, res) {
   try {
-    console.log(req.body);
     const {
       nationalId,
       name,
@@ -140,13 +150,19 @@ async function register(req, res) {
     // const imageName = image.destination.replaceAll("\\", "/") + image.filename;
     const username = nationalId;
     const isApproved = 0;
+    const isAccepted = 0;
+    const date = new Date();
+    const dateOfApplying = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
 
     // Create a new user
     const newStudent = await conn.awaitQuery(
-      "INSERT INTO students (name, birthday,nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, highschoolGrade, accomodationType, accomodationWithNutrition, password, username, isApproved) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+      "INSERT INTO students (name, birthday,dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, highschoolGrade, accomodationType, accomodationWithNutrition, password, username, isApproved, isAccepted) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
       [
         name,
         birthday,
+        dateOfApplying,
         nationalId,
         placeOfBirth,
         gender,
@@ -174,6 +190,7 @@ async function register(req, res) {
         hashedPassword,
         username,
         isApproved,
+        isAccepted,
       ]
     );
 
@@ -399,6 +416,7 @@ async function deleteImage(req, res) {
 //----------------------------------------------------------------
 
 student.get("/", index);
+student.get("/unapproved", indexUnapproved);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
 student.post("/login", login);
