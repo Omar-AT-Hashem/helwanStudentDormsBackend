@@ -64,9 +64,24 @@ async function index(req, res) {
 //----------------------------------------------------------------
 async function indexUnapproved(req, res) {
   try {
-    const students = await conn.awaitQuery(
-      "SELECT * FROM students WHERE isApproved = 0"
-    );
+    const { descriminator, options } = req.params;
+    let students;
+    if (descriminator == "none") {
+      students = await conn.awaitQuery(
+        "SELECT * FROM students WHERE isApproved = 0"
+      );
+    }
+    if (descriminator == "gender") {
+      if(options == "m")
+      students = await conn.awaitQuery(
+        "SELECT * FROM students WHERE isApproved = 0 AND gender = 'M' "
+      );
+      if(options == "f")
+      students = await conn.awaitQuery(
+        "SELECT * FROM students WHERE isApproved = 0 AND gender = 'F' "
+      );
+    }
+
     return res.status(200).json(students);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
@@ -151,6 +166,7 @@ async function register(req, res) {
     const username = nationalId;
     const isApproved = 0;
     const isAccepted = 0;
+    const isHoused = 0;
     const date = new Date();
     const dateOfApplying = `${date.getFullYear()}-${
       date.getMonth() + 1
@@ -158,7 +174,7 @@ async function register(req, res) {
 
     // Create a new user
     const newStudent = await conn.awaitQuery(
-      "INSERT INTO students (name, birthday,dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, highschoolGrade, accomodationType, accomodationWithNutrition, password, username, isApproved, isAccepted) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+      "INSERT INTO students (name, birthday,dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, highschoolGrade, accomodationType, accomodationWithNutrition, password, username, isApproved, isAccepted, isHoused) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
       [
         name,
         birthday,
@@ -191,6 +207,7 @@ async function register(req, res) {
         username,
         isApproved,
         isAccepted,
+        isHoused
       ]
     );
 
@@ -416,7 +433,7 @@ async function deleteImage(req, res) {
 //----------------------------------------------------------------
 
 student.get("/", index);
-student.get("/unapproved", indexUnapproved);
+student.get("/unapproved/:descriminator/:options", indexUnapproved);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
 student.post("/login", login);
