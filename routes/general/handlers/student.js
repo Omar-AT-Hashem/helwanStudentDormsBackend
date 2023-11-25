@@ -64,21 +64,21 @@ async function index(req, res) {
 //----------------------------------------------------------------
 async function indexColumn(req, res) {
   try {
-    const { column, descriminator, options } = req.params;
+    const { column, value, descriminator, options } = req.params;
     let students;
     if (descriminator == "none") {
       students = await conn.awaitQuery(
-        `SELECT * FROM students WHERE ${column} = 0`
+        `SELECT * FROM students WHERE ${column} = ${value}`
       );
     }
     if (descriminator == "gender") {
       if (options == "m")
         students = await conn.awaitQuery(
-          `SELECT * FROM students WHERE ${column} = 0 AND gender = 'M' `
+          `SELECT * FROM students WHERE ${column} = ${value} AND gender = 'M' `
         );
       if (options == "f")
         students = await conn.awaitQuery(
-          `SELECT * FROM students WHERE ${column} = 0 AND gender = 'F' `
+          `SELECT * FROM students WHERE ${column} = ${value} AND gender = 'F' `
         );
     }
 
@@ -489,7 +489,7 @@ async function asessStudent(req, res) {
 //----------------------------------------------------------------
 
 student.get("/", index);
-student.get("/column/:column/:descriminator/:options", indexColumn);
+student.get("/column/:column/:value/:descriminator/:options", indexColumn);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
 student.post("/login", login);
