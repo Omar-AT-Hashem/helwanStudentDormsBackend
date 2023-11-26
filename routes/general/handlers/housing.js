@@ -25,43 +25,98 @@ async function getHousingData(req, res) {
   }
 }
 
-async function getTownsBuildings(req, res) {
-    try {
-      const townsBuildings = await conn.awaitQuery(
-        "SELECT * FROM towns INNER JOIN buildings ON towns.id = buildings.townId"
-      );
+// ------------------------------------------------------------------------------
 
-      const towns = await conn.awaitQuery(
-        "SELECT * FROM towns"
-      )
+// async function getTownsBuildings(req, res) {
+//   try {
+//     const townsBuildings = await conn.awaitQuery(
+//       "SELECT * FROM towns INNER JOIN buildings ON towns.id = buildings.townId"
+//     );
 
-      const townIds = new Set(townsBuildings.map(building => building.townId))
-      let housing = []
-      
-      townIds.forEach(townId => {
-        let currentTown = towns.find(ele => ele.id == townId) 
-        let town = {
-            id: townId,
-            name: currentTown.name,
-            buildings: []
-        }
-        townsBuildings.forEach(building => {
-            if(townId == building.townId){
-                
-                town.buildings.push({id: building.id, name: building.name})
+//     const towns = await conn.awaitQuery("SELECT * FROM towns");
+
+//     const townIds = new Set(townsBuildings.map((building) => building.townId));
+//     let housing = [];
+
+//     townIds.forEach((townId) => {
+//       let currentTown = towns.find((ele) => ele.id == townId);
+//       let town = {
+//         id: townId,
+//         name: currentTown.name,
+//         buildings: [],
+//       };
+//       townsBuildings.forEach((building) => {
+//         if (townId == building.townId) {
+//           town.buildings.push({ id: building.id, name: building.name });
+//         }
+//       });
+//       housing.push(town);
+//     });
+
+//     return res.status(200).json(housing);
+//   } catch (err) {
+//     return res.status(500).json({ message: "Something went wrong" });
+//   }
+// }
+
+// ------------------------------------------------------------------------------
+
+async function getTownsBuildingsAndFloors(req, res) {
+  try {
+    const townsFloors = await conn.awaitQuery(
+      "SELECT * FROM towns INNER JOIN buildings ON towns.id = buildings.townId INNER JOIN floors ON buildings.id = floors.buildingId"
+    );
+
+    const towns = await conn.awaitQuery("SELECT * FROM towns");
+    const buildings = await conn.awaitQuery("SELECT * FROM buildings");
+
+    // creates a set with unique IDs for buildings and towns
+    const townIds = new Set(townsFloors.map((floor) => floor.townId));
+    const buildingIds = new Set(townsFloors.map((floor) => floor.buildingId));
+
+    let housing = [];
+
+    // starts to build the data structure to carry towns, buildings, and floors
+    townIds.forEach((townId) => {
+      let currentTown = towns.find((ele) => ele.id == townId);
+      //town data structure
+      let town = {
+        id: townId,
+        name: currentTown.name,
+        buildings: [],
+      };
+      buildingIds.forEach((buildingId) => {
+        // finds the data for the current building
+        let currentBuilding = buildings.find((ele) => ele.id == buildingId);
+
+        if (currentBuilding && currentBuilding.townId == townId) {
+          // building data structure
+          let building = {
+            id: buildingId,
+            name: currentBuilding.name,
+            floors: [],
+          };
+          townsFloors.forEach((floor) => {
+            if (floor.buildingId == buildingId) {
+              building.floors.push({ id: floor.id, number: floor.number });
             }
-        })
-        housing.push(town)
-      })
-      
-
-      return res.status(200).json(housing);
-    } catch (err) {
-      return res.status(500).json({ message: "Something went wrong" });
-    }
+          });
+          town.buildings.push(building);
+        }
+      });
+      housing.push(town);
+    });
+    return res.status(200).json(housing);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Something went wrong" });
   }
+}
+
+// ------------------------------------------------------------------------------
 
 housing.get("/", getHousingData);
-housing.get("/get-towns-buildings", getTownsBuildings);
+// housing.get("/get-towns-buildings", getTownsBuildings);
+housing.get("/get-towns-buildings-floors", getTownsBuildingsAndFloors);
 
 export default housing;
