@@ -61,7 +61,7 @@ async function getHousingData(req, res) {
 
 // ------------------------------------------------------------------------------
 
-async function getTownsBuildingsAndFloors(req, res) {
+async function getTownsBuildingsFloors(req, res) {
   try {
     const townsFloors = await conn.awaitQuery(
       "SELECT * FROM towns INNER JOIN buildings ON towns.id = buildings.townId INNER JOIN floors ON buildings.id = floors.buildingId"
@@ -115,8 +115,51 @@ async function getTownsBuildingsAndFloors(req, res) {
 
 // ------------------------------------------------------------------------------
 
+async function getFloorRoomsBeds(req, res) {
+  try {
+    const { floorId } = req.params;
+    const roomsBeds = await conn.awaitQuery(
+      "SELECT * FROM rooms INNER JOIN beds ON rooms.id = beds.roomId WHERE floorId = ? ",
+      [floorId]
+    );
+
+    const rooms = await conn.awaitQuery("SELECT * FROM rooms");
+
+    const roomIds = new Set(roomsBeds.map((bed) => bed.roomId));
+    let housing = [];
+
+    roomIds.forEach((roomId) => {
+      let currentRoom = rooms.find((ele) => ele.id == roomId);
+      let room = {
+        id: roomId,
+        number: currentRoom.number,
+        beds: [],
+      };
+      roomsBeds.forEach((bed) => {
+        if (roomId == bed.roomId) {
+          room.beds.push({
+            id: bed.id,
+            number: bed.number,
+            isOccupied: bed.isOccupied,
+            occupant: bed.occupant,
+          });
+        }
+      });
+      housing.push(room);
+    });
+
+    return res.status(200).json(housing);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// ------------------------------------------------------------------------------
+
 housing.get("/", getHousingData);
 // housing.get("/get-towns-buildings", getTownsBuildings);
-housing.get("/get-towns-buildings-floors", getTownsBuildingsAndFloors);
+housing.get("/towns-buildings-floors", getTownsBuildingsFloors);
+housing.get("/floor-rooms-beds/:floorId", getFloorRoomsBeds);
 
 export default housing;
