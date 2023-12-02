@@ -273,7 +273,7 @@ async function getStudentById(req, res) {
       "SELECT * FROM students WHERE id = ? ",
       [studentId]
     );
-    return res.status(200).json(student[0]);
+    return res.status(200).json(student);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
@@ -294,7 +294,7 @@ async function getStudentByNationalId(req, res) {
       "SELECT * FROM students WHERE nationalId = ? ",
       [studentNationalId]
     );
-    return res.status(200).json(student[0]);
+    return res.status(200).json(student);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
