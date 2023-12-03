@@ -12,6 +12,7 @@ import building from "./handlers/building.js"
 import floor from "./handlers/floor.js"
 import room from "./handlers/room.js"
 import town from "./handlers/town.js"
+import penalty from "./handlers/penalty.js"
 
 const generalRoutes = Router()
 
@@ -36,6 +37,9 @@ generalRoutes.use("/bed", bed)
 generalRoutes.use("/housing", housing)
 
 //------------------ End Housing Routes -----------------------
+
+generalRoutes.use("/penalty", penalty)
+
 
 
 export default generalRoutes
