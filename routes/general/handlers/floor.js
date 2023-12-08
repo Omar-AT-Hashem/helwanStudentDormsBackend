@@ -1,7 +1,7 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
 
-const category = Router();
+const floor = Router();
 
 //----------------------------------------------------------------
 
@@ -77,9 +77,9 @@ async function deleteById(req, res) {
 }
 //----------------------------------------------------------------
 
-category.get("/", index);
-category.post("/", create);
-category.delete("/:id", deleteById);
-category.put("/", update);
+floor.get("/", index);
+floor.post("/", create);
+floor.delete("/:id", deleteById);
+floor.put("/", update);
 
-export default category;
+export default floor;

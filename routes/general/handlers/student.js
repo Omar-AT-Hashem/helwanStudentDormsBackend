@@ -62,10 +62,35 @@ async function index(req, res) {
 }
 
 //----------------------------------------------------------------
+async function indexColumn(req, res) {
+  try {
+    const { column, value, descriminator, options } = req.params;
+    let students;
+    if (descriminator == "none") {
+      students = await conn.awaitQuery(
+        `SELECT * FROM students WHERE ${column} = ${value}`
+      );
+    }
+    if (descriminator == "gender") {
+      if (options == "m")
+        students = await conn.awaitQuery(
+          `SELECT * FROM students WHERE ${column} = ${value} AND gender = 'M' `
+        );
+      if (options == "f")
+        students = await conn.awaitQuery(
+          `SELECT * FROM students WHERE ${column} = ${value} AND gender = 'F' `
+        );
+    }
+
+    return res.status(200).json(students);
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+//----------------------------------------------------------------
 
 async function register(req, res) {
   try {
-    console.log(req.body);
     const {
       nationalId,
       name,
@@ -90,7 +115,7 @@ async function register(req, res) {
       familyAbroad,
       highschoolAbroad,
       highschoolSpecialization,
-      highschoolGrade,
+      grade,
       accomodationType,
       accomodationWithNutrition,
       password,
@@ -117,7 +142,7 @@ async function register(req, res) {
       !residence ||
       !addressDetails ||
       !highschoolSpecialization ||
-      !highschoolGrade ||
+      !grade ||
       !accomodationType ||
       !password
     ) {
@@ -140,13 +165,20 @@ async function register(req, res) {
     // const imageName = image.destination.replaceAll("\\", "/") + image.filename;
     const username = nationalId;
     const isApproved = 0;
+    const isAccepted = 0;
+    const isHoused = 0;
+    const date = new Date();
+    const dateOfApplying = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
 
     // Create a new user
     const newStudent = await conn.awaitQuery(
-      "INSERT INTO students (name, birthday,nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, highschoolGrade, accomodationType, accomodationWithNutrition, password, username, isApproved) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+      "INSERT INTO students (name, birthday,dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, grade, accomodationType, accomodationWithNutrition, password, username, isApproved, isAccepted, isHoused) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
       [
         name,
         birthday,
+        dateOfApplying,
         nationalId,
         placeOfBirth,
         gender,
@@ -168,12 +200,14 @@ async function register(req, res) {
         parseInt(familyAbroad),
         parseInt(highschoolAbroad),
         highschoolSpecialization,
-        highschoolGrade,
+        parseFloat(grade),
         accomodationType,
         parseInt(accomodationWithNutrition),
         hashedPassword,
         username,
         isApproved,
+        isAccepted,
+        isHoused,
       ]
     );
 
@@ -239,7 +273,7 @@ async function getStudentById(req, res) {
       "SELECT * FROM students WHERE id = ? ",
       [studentId]
     );
-    return res.status(200).json(student[0]);
+    return res.status(200).json(student);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
@@ -260,7 +294,7 @@ async function getStudentByNationalId(req, res) {
       "SELECT * FROM students WHERE nationalId = ? ",
       [studentNationalId]
     );
-    return res.status(200).json(student[0]);
+    return res.status(200).json(student);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
@@ -293,7 +327,7 @@ async function update(req, res) {
       familyAbroad,
       highschoolAbroad,
       highschoolSpecialization,
-      highschoolGrade,
+      grade,
       accomodationType,
       accomodationWithNutrition,
       password,
@@ -324,7 +358,7 @@ async function update(req, res) {
     }
 
     await conn.awaitQuery(
-      "UPDATE students SET nationalId = ?, name = ?, birthday = ?, placeOfBirth = ?, gender = ?, telephone = ?, mobile = ?, email = ?, religion = ?, faculty = ?, fatherName = ?, fatherNationalId = ?, fatherOccupation = ?, fatherNumber = ?, guardianName = ?, guardianNationalId = ?, guardianRelationship = ?, residence = ?, addressDetails = ?, isDisabled = ?, familyAbroad = ?, highschoolAbroad = ?, highschoolSpecialization = ?, highschoolGrade = ?, accomodationType = ?, accomodationWithNutrition = ? WHERE id = ?;",
+      "UPDATE students SET nationalId = ?, name = ?, birthday = ?, placeOfBirth = ?, gender = ?, telephone = ?, mobile = ?, email = ?, religion = ?, faculty = ?, fatherName = ?, fatherNationalId = ?, fatherOccupation = ?, fatherNumber = ?, guardianName = ?, guardianNationalId = ?, guardianRelationship = ?, residence = ?, addressDetails = ?, isDisabled = ?, familyAbroad = ?, highschoolAbroad = ?, highschoolSpecialization = ?, grade = ?, accomodationType = ?, accomodationWithNutrition = ? WHERE id = ?;",
       [
         nationalId,
         name,
@@ -349,7 +383,7 @@ async function update(req, res) {
         familyAbroad,
         highschoolAbroad,
         highschoolSpecialization,
-        highschoolGrade,
+        grade,
         accomodationType,
         accomodationWithNutrition,
         id,
@@ -396,13 +430,71 @@ async function deleteImage(req, res) {
   }
 }
 
+async function asessStudent(req, res) {
+  try {
+    const { approveORreject } = req.params;
+
+    if (approveORreject !== "approve" && approveORreject !== "reject") {
+      return res
+        .status(400)
+        .json({ message: "parameter must either be approve or reject" });
+    }
+
+    const { id, grade } = req.body;
+
+    if (!id || !grade) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
+
+    if (isNaN(parseFloat(grade))) {
+      return res.status(400).json({ message: "Grade must be a numeric value" });
+    }
+
+    if (approveORreject == "reject") {
+      await conn.awaitQuery(
+        "UPDATE students SET isApproved = ?  WHERE id = ?;",
+        [-1, id]
+      );
+
+      return res.status(201).json({ message: "student rejected" });
+    }
+
+    if (approveORreject == "approve") {
+      await conn.awaitQuery(
+        "UPDATE students SET isApproved = ?  WHERE id = ?;",
+        [1, id]
+      );
+
+      if (grade > 10) {
+        await conn.awaitQuery(
+          "UPDATE students SET isAccepted = ?  WHERE id = ?;",
+          [1, id]
+        );
+      } else {
+        await conn.awaitQuery(
+          "UPDATE students SET isAccepted = ?  WHERE id = ?;",
+          [-1, id]
+        );
+      }
+    }
+    return res.status(201).json({ message: "student asessed" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
 //----------------------------------------------------------------
 
 student.get("/", index);
+student.get("/column/:column/:value/:descriminator/:options", indexColumn);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
 student.post("/login", login);
 student.post("/register", register);
+student.post("/asess/:approveORreject", asessStudent);
 student.put("/update-image", upload.single("image"), updateImage);
 student.put("/delete-image", deleteImage);
 student.put("/", update);

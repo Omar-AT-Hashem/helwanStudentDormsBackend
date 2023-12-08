@@ -1,14 +1,14 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
 
-const category = Router();
+const bed = Router();
 
 //----------------------------------------------------------------
 
 async function index(req, res) {
   try {
-    const students = await conn.awaitQuery("SELECT * FROM categories");
-    return res.status(200).json(students);
+    const beds = await conn.awaitQuery("SELECT * FROM beds");
+    return res.status(200).json(beds);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
@@ -18,17 +18,17 @@ async function index(req, res) {
 
 async function create(req, res) {
   try {
-    const { name, governorate } = req.body;
+    const { roomId, number } = req.body;
 
-    if (!name || !governorate) {
+    if (!roomId || !number) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
     const created = await conn.awaitQuery(
-      "INSERT INTO categories (name, governorate) VALUES (?,?)",
-      [name, governorate]
+      "INSERT INTO categories (number, roomId, isOccupied) VALUES (?,?,?)",
+      [number, roomId, 0]
     );
 
     res.status(201).json({ message: "Catagory created", id: created.insertId });
@@ -64,6 +64,35 @@ async function update(req, res) {
 
 //----------------------------------------------------------------
 
+async function occupy(req, res) {
+  try {
+    const { studentId, bedId } = req.body;
+
+    if (!studentId || !bedId) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
+
+    await conn.awaitQuery(
+      "UPDATE beds SET isOccupied = ?, occupant = ? WHERE id = ?",
+      [1, studentId, bedId]
+    );
+
+    await conn.awaitQuery("UPDATE students SET isHoused = ? WHERE id = ?", [
+      1,
+      studentId,
+    ]);
+
+    res.status(201).json({ message: "Student Housed" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 async function deleteById(req, res) {
   const id = req.params.id;
   try {
@@ -77,9 +106,10 @@ async function deleteById(req, res) {
 }
 //----------------------------------------------------------------
 
-category.get("/", index);
-category.post("/", create);
-category.delete("/:id", deleteById);
-category.put("/", update);
+bed.get("/", index);
+bed.post("/", create);
+bed.post("/occupy", occupy);
+bed.delete("/:id", deleteById);
+bed.put("/", update);
 
-export default category;
+export default bed;

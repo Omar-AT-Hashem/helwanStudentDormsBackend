@@ -1,14 +1,29 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
 
-const category = Router();
+const penalty = Router();
 
 //----------------------------------------------------------------
 
 async function index(req, res) {
   try {
-    const students = await conn.awaitQuery("SELECT * FROM categories");
+    const students = await conn.awaitQuery("SELECT * FROM towns");
     return res.status(200).json(students);
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+//----------------------------------------------------------------
+
+async function getByStudentId(req, res) {
+  try {
+    const { studentId } = req.params;
+    const penalties = await conn.awaitQuery(
+      "SELECT * FROM penalties WHERE studentId = ? ",
+      [studentId]
+    );
+    return res.status(200).json(penalties);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
@@ -18,20 +33,20 @@ async function index(req, res) {
 
 async function create(req, res) {
   try {
-    const { name, governorate } = req.body;
+    const { type, reason, date, studentId } = req.body;
 
-    if (!name || !governorate) {
+    if (!type || !reason || !date) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
     const created = await conn.awaitQuery(
-      "INSERT INTO categories (name, governorate) VALUES (?,?)",
-      [name, governorate]
+      "INSERT INTO penalties (type, reason, date, studentId) VALUES (?,?,?,?)",
+      [type, reason, date, studentId]
     );
 
-    res.status(201).json({ message: "Catagory created", id: created.insertId });
+    res.status(201).json({ message: "Penalty created", id: created.insertId });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -77,9 +92,10 @@ async function deleteById(req, res) {
 }
 //----------------------------------------------------------------
 
-category.get("/", index);
-category.post("/", create);
-category.delete("/:id", deleteById);
-category.put("/", update);
+penalty.get("/", index);
+penalty.get("/get-by-studentId/:studentId", getByStudentId);
+penalty.post("/", create);
+penalty.delete("/:id", deleteById);
+penalty.put("/", update);
 
-export default category;
+export default penalty;

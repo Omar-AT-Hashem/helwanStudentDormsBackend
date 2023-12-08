@@ -1,13 +1,13 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
 
-const category = Router();
+const town = Router();
 
 //----------------------------------------------------------------
 
 async function index(req, res) {
   try {
-    const students = await conn.awaitQuery("SELECT * FROM categories");
+    const students = await conn.awaitQuery("SELECT * FROM towns");
     return res.status(200).json(students);
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
@@ -77,9 +77,9 @@ async function deleteById(req, res) {
 }
 //----------------------------------------------------------------
 
-category.get("/", index);
-category.post("/", create);
-category.delete("/:id", deleteById);
-category.put("/", update);
+town.get("/", index);
+town.post("/", create);
+town.delete("/:id", deleteById);
+town.put("/", update);
 
-export default category;
+export default town;
