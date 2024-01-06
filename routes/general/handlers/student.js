@@ -5,6 +5,8 @@ import conn from "../../../config/db.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import {distance} from "@turf/turf"
+import calculateAge from "../../../helpers/claculateAge.js";
 import authenticateToken from "../../../middleware/authenticateToken.js";
 
 import path from "path";
@@ -116,9 +118,12 @@ async function register(req, res) {
       highschoolAbroad,
       highschoolSpecialization,
       grade,
+      isNew,
       accomodationType,
       accomodationWithNutrition,
       password,
+      latitude,
+      longitude,
     } = req.body;
 
     if (
@@ -151,6 +156,8 @@ async function register(req, res) {
         .json({ message: "Please provide all the required fields" });
     }
 
+
+
     // Check if the user already exists
     const existingUser = await conn.awaitQuery(
       "SELECT * FROM students WHERE nationalId = ?",
@@ -159,6 +166,29 @@ async function register(req, res) {
     if (existingUser.length > 0) {
       return res.status(409).json({ message: "User already exists" });
     }
+
+    var userLocation = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [longitude, latitude]
+      }
+    };
+
+    var universityLocation = {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [31.316204046556752, 29.866227059916042]
+      }
+    };
+
+    const dist = distance(userLocation, universityLocation, "kilometers");
+    const age = calculateAge(birthday);
+
+  
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -174,10 +204,12 @@ async function register(req, res) {
 
     // Create a new user
     const newStudent = await conn.awaitQuery(
-      "INSERT INTO students (name, birthday,dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, grade, accomodationType, accomodationWithNutrition, password, username, isApproved, isAccepted, isHoused) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+      "INSERT INTO students (name, birthday,age, distance, dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, grade, accomodationType, accomodationWithNutrition, password, username, isNew, isApproved, isAccepted, isHoused) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
       [
         name,
         birthday,
+        parseInt(age),
+        parseFloat(dist),
         dateOfApplying,
         nationalId,
         placeOfBirth,
@@ -205,6 +237,7 @@ async function register(req, res) {
         parseInt(accomodationWithNutrition),
         hashedPassword,
         username,
+        isNew,
         isApproved,
         isAccepted,
         isHoused,
