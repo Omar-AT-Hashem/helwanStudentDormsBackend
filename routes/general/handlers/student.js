@@ -467,51 +467,30 @@ async function deleteImage(req, res) {
   }
 }
 
-async function asessStudent(req, res) {
+async function assessStudents(req, res) {
   try {
-    const { approveORreject } = req.params;
+    const numberOFStudentsToBeAccepted = 6;
 
-   
-    const { id, grade } = req.body;
+    const assessmentSql =
+      "SELECT * FROM students WHERE isApproved = ? ORDER BY isNew ASC, academicYear DESC, grade DESC, age ASC, distance DESC;";
 
-    if (!id || !grade) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all the required fields" });
-    }
+    const assessedStudents = await conn.awaitQuery(assessmentSql, [1]);
 
-    if (isNaN(parseFloat(grade))) {
-      return res.status(400).json({ message: "Grade must be a numeric value" });
-    }
+    const selectedStudents = assessedStudents.slice(
+      0,
+      numberOFStudentsToBeAccepted
+    );
 
-    if (approveORreject == "reject") {
-      await conn.awaitQuery(
-        "UPDATE students SET isApproved = ?  WHERE id = ?;",
-        [-1, id]
-      );
-
-      return res.status(201).json({ message: "student rejected" });
-    }
-
-    if (approveORreject == "approve") {
-      await conn.awaitQuery(
-        "UPDATE students SET isApproved = ?  WHERE id = ?;",
-        [1, id]
-      );
-
-      if (grade > 10) {
-        await conn.awaitQuery(
-          "UPDATE students SET isAccepted = ?  WHERE id = ?;",
-          [1, id]
+    await Promise.all(
+      selectedStudents.map((student) => {
+        return conn.awaitQuery(
+          "UPDATE students SET isAccepted = ?  WHERE id = ?",
+          [1, student.id]
         );
-      } else {
-        await conn.awaitQuery(
-          "UPDATE students SET isAccepted = ?  WHERE id = ?;",
-          [-1, id]
-        );
-      }
-    }
-    return res.status(201).json({ message: "student asessed" });
+      })
+    );
+
+    res.status(200).json({ message: "Student assesment complete" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -538,7 +517,6 @@ async function approveOrReject(req, res) {
         .json({ message: "Please provide all the required fields" });
     }
 
-
     if (approveORreject == "reject") {
       await conn.awaitQuery(
         "UPDATE students SET isApproved = ?  WHERE id = ?;",
@@ -563,7 +541,36 @@ async function approveOrReject(req, res) {
 
 //----------------------------------------------------------------
 
+async function meta(req, res) {
+  try {
+    const applicantFemales = await conn.awaitQuery(
+      "SELECT * FROM students WHERE gender = ? AND isApproved = ? AND isAccepted = ?",
+      ["F", 1, 0]
+    );
+    const applicantMales = await conn.awaitQuery(
+      "SELECT * FROM students WHERE gender = ? AND isApproved = ? AND isAccepted = ?",
+      ["M", 1, 0]
+    );
+
+    const applicantFemalesCount = applicantFemales.length;
+    const applicantMalesCount = applicantMales.length;
+    const totalApplicants = applicantFemalesCount + applicantMalesCount;
+
+    res.status(200).json({
+      applicantFemalesCount: applicantFemalesCount,
+      applicantMalesCount: applicantMalesCount,
+      totalApplicants: totalApplicants,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 student.get("/", index);
+student.get("/meta", meta);
 student.get("/column/:column/:value/:descriminator/:options", indexColumn);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
@@ -573,5 +580,6 @@ student.post("/approve-or-reject/:approveORreject", approveOrReject);
 student.put("/update-image", upload.single("image"), updateImage);
 student.put("/delete-image", deleteImage);
 student.put("/", update);
+student.put("/assess-students", assessStudents);
 
 export default student;
