@@ -5,7 +5,7 @@ import conn from "../../../config/db.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {distance} from "@turf/turf"
+import { distance } from "@turf/turf";
 import calculateAge from "../../../helpers/claculateAge.js";
 import authenticateToken from "../../../middleware/authenticateToken.js";
 
@@ -117,6 +117,7 @@ async function register(req, res) {
       familyAbroad,
       highschoolAbroad,
       highschoolSpecialization,
+      academicYear,
       grade,
       isNew,
       accomodationType,
@@ -147,6 +148,7 @@ async function register(req, res) {
       !residence ||
       !addressDetails ||
       !highschoolSpecialization ||
+      !academicYear ||
       !grade ||
       !accomodationType ||
       !password
@@ -156,7 +158,10 @@ async function register(req, res) {
         .json({ message: "Please provide all the required fields" });
     }
 
-
+    if (!longitude || !latitude) {
+      longitude = 31.316204046556752;
+      latitude = 29.866227059916042;
+    }
 
     // Check if the user already exists
     const existingUser = await conn.awaitQuery(
@@ -168,27 +173,25 @@ async function register(req, res) {
     }
 
     var userLocation = {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [longitude, latitude]
-      }
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Point",
+        coordinates: [longitude, latitude],
+      },
     };
 
     var universityLocation = {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [31.316204046556752, 29.866227059916042]
-      }
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Point",
+        coordinates: [31.316204046556752, 29.866227059916042],
+      },
     };
 
     const dist = distance(userLocation, universityLocation, "kilometers");
     const age = calculateAge(birthday);
-
-  
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -204,7 +207,7 @@ async function register(req, res) {
 
     // Create a new user
     const newStudent = await conn.awaitQuery(
-      "INSERT INTO students (name, birthday,age, distance, dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, grade, accomodationType, accomodationWithNutrition, password, username, isNew, isApproved, isAccepted, isHoused) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+      "INSERT INTO students (name, birthday,age, distance, dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, academicYear, grade, accomodationType, accomodationWithNutrition, password, username, isNew, isApproved, isAccepted, isHoused) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
       [
         name,
         birthday,
@@ -232,6 +235,7 @@ async function register(req, res) {
         parseInt(familyAbroad),
         parseInt(highschoolAbroad),
         highschoolSpecialization,
+        parseInt(academicYear),
         parseFloat(grade),
         accomodationType,
         parseInt(accomodationWithNutrition),
@@ -467,12 +471,7 @@ async function asessStudent(req, res) {
   try {
     const { approveORreject } = req.params;
 
-    if (approveORreject !== "approve" && approveORreject !== "reject") {
-      return res
-        .status(400)
-        .json({ message: "parameter must either be approve or reject" });
-    }
-
+   
     const { id, grade } = req.body;
 
     if (!id || !grade) {
@@ -521,13 +520,56 @@ async function asessStudent(req, res) {
 
 //----------------------------------------------------------------
 
+async function approveOrReject(req, res) {
+  try {
+    const { approveORreject } = req.params;
+
+    if (approveORreject !== "approve" && approveORreject !== "reject") {
+      return res
+        .status(400)
+        .json({ message: "parameter must either be approve or reject" });
+    }
+
+    const { id } = req.body;
+
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
+
+
+    if (approveORreject == "reject") {
+      await conn.awaitQuery(
+        "UPDATE students SET isApproved = ?  WHERE id = ?;",
+        [-1, id]
+      );
+
+      return res.status(201).json({ message: "student rejected" });
+    }
+
+    if (approveORreject == "approve") {
+      await conn.awaitQuery(
+        "UPDATE students SET isApproved = ?  WHERE id = ?;",
+        [1, id]
+      );
+      return res.status(201).json({ message: "student approved" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 student.get("/", index);
 student.get("/column/:column/:value/:descriminator/:options", indexColumn);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
 student.post("/login", login);
 student.post("/register", register);
-student.post("/asess/:approveORreject", asessStudent);
+student.post("/approve-or-reject/:approveORreject", approveOrReject);
 student.put("/update-image", upload.single("image"), updateImage);
 student.put("/delete-image", deleteImage);
 student.put("/", update);
