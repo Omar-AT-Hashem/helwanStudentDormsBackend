@@ -18,20 +18,20 @@ async function index(req, res) {
 
 async function create(req, res) {
   try {
-    const { name, governorate } = req.body;
+    const { number, floorId } = req.body;
 
-    if (!name || !governorate) {
+    if (!number || !floorId) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
     const created = await conn.awaitQuery(
-      "INSERT INTO categories (name, governorate) VALUES (?,?)",
-      [name, governorate]
+      "INSERT INTO rooms (number, floorId) VALUES (?,?)",
+      [number, floorId]
     );
 
-    res.status(201).json({ message: "Catagory created", id: created.insertId });
+    res.status(201).json({ message: "room created", id: created.insertId });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -67,9 +67,9 @@ async function update(req, res) {
 async function deleteById(req, res) {
   const id = req.params.id;
   try {
-    await conn.awaitQuery("DELETE FROM categories WHERE id = ?", [id]);
+    await conn.awaitQuery("DELETE FROM rooms WHERE id = ?", [id]);
     return res.status(200).json({
-      message: `date with Id = ${instructionId} was deleted successfully`,
+      message: `room with Id = ${id} was deleted successfully`,
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });

@@ -123,7 +123,10 @@ async function getFloorRoomsBeds(req, res) {
       [floorId]
     );
 
-    const rooms = await conn.awaitQuery("SELECT * FROM rooms");
+    const rooms = await conn.awaitQuery(
+      "SELECT * FROM rooms Where floorId = ?",
+      [floorId]
+    );
 
     const roomIds = new Set(roomsBeds.map((bed) => bed.roomId));
     let housing = [];
@@ -147,6 +150,14 @@ async function getFloorRoomsBeds(req, res) {
       });
       housing.push(room);
     });
+
+    rooms.forEach((room) => {
+      if (!housing.find((ele) => ele.id == room.id)) {
+        housing.push({ ...room, beds: [] });
+      }
+    });
+
+    housing = housing.sort((a,b) => a.number - b.number);
 
     return res.status(200).json(housing);
   } catch (err) {
