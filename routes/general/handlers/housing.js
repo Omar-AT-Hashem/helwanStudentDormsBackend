@@ -27,46 +27,13 @@ async function getHousingData(req, res) {
 
 // ------------------------------------------------------------------------------
 
-// async function getTownsBuildings(req, res) {
-//   try {
-//     const townsBuildings = await conn.awaitQuery(
-//       "SELECT * FROM towns INNER JOIN buildings ON towns.id = buildings.townId"
-//     );
-
-//     const towns = await conn.awaitQuery("SELECT * FROM towns");
-
-//     const townIds = new Set(townsBuildings.map((building) => building.townId));
-//     let housing = [];
-
-//     townIds.forEach((townId) => {
-//       let currentTown = towns.find((ele) => ele.id == townId);
-//       let town = {
-//         id: townId,
-//         name: currentTown.name,
-//         buildings: [],
-//       };
-//       townsBuildings.forEach((building) => {
-//         if (townId == building.townId) {
-//           town.buildings.push({ id: building.id, name: building.name });
-//         }
-//       });
-//       housing.push(town);
-//     });
-
-//     return res.status(200).json(housing);
-//   } catch (err) {
-//     return res.status(500).json({ message: "Something went wrong" });
-//   }
-// }
-
-// ------------------------------------------------------------------------------
-
 async function getTownsBuildingsFloors(req, res) {
   try {
     const townsFloors = await conn.awaitQuery(
       "SELECT * FROM towns INNER JOIN buildings ON towns.id = buildings.townId INNER JOIN floors ON buildings.id = floors.buildingId"
     );
 
+    
     const towns = await conn.awaitQuery("SELECT * FROM towns");
     const buildings = await conn.awaitQuery("SELECT * FROM buildings");
 
@@ -106,6 +73,7 @@ async function getTownsBuildingsFloors(req, res) {
       });
       housing.push(town);
     });
+
     return res.status(200).json(housing);
   } catch (err) {
     console.log(err);
@@ -157,7 +125,7 @@ async function getFloorRoomsBeds(req, res) {
       }
     });
 
-    housing = housing.sort((a,b) => a.number - b.number);
+    housing = housing.sort((a, b) => a.number - b.number);
 
     return res.status(200).json(housing);
   } catch (err) {
