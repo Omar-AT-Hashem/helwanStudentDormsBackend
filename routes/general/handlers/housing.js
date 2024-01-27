@@ -29,11 +29,37 @@ async function getHousingData(req, res) {
 
 async function getTownsBuildingsFloors(req, res) {
   try {
-    const townsFloors = await conn.awaitQuery(
+    let townsFloors = await conn.awaitQuery(
       "SELECT * FROM towns INNER JOIN buildings ON towns.id = buildings.townId INNER JOIN floors ON buildings.id = floors.buildingId"
     );
 
-    
+    let rooms = await conn.awaitQuery("SELECT * FROM rooms");
+
+    let beds = await conn.awaitQuery("SELECT * FROM beds");
+
+
+
+   
+
+    townsFloors = townsFloors.map((floor) => {
+      let currentFloorInfo = { ...floor, floorOccupied: false };
+
+      rooms.forEach((room) => {
+        if ((room.floorId == floor.id)) {
+          beds.forEach((bed) => {
+            if ((bed.roomId == room.id)) {
+              if(bed.isOccupied == 1) {
+                currentFloorInfo = { ...currentFloorInfo,  floorOccupied: true };
+              }
+            }
+          });
+        }
+      });
+      return {...currentFloorInfo};
+    });
+
+    console.log(townsFloors);
+
     const towns = await conn.awaitQuery("SELECT * FROM towns");
     const buildings = await conn.awaitQuery("SELECT * FROM buildings");
 
@@ -65,7 +91,7 @@ async function getTownsBuildingsFloors(req, res) {
           };
           townsFloors.forEach((floor) => {
             if (floor.buildingId == buildingId) {
-              building.floors.push({ id: floor.id, number: floor.number });
+              building.floors.push({ id: floor.id, number: floor.number, floorOccupied: floor.floorOccupied });
             }
           });
           town.buildings.push(building);
@@ -73,6 +99,8 @@ async function getTownsBuildingsFloors(req, res) {
       });
       housing.push(town);
     });
+
+   
 
     return res.status(200).json(housing);
   } catch (err) {
