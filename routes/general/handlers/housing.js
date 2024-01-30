@@ -78,9 +78,11 @@ async function getTownsBuildingsFloors(req, res) {
 
         if (currentBuilding && currentBuilding.townId == townId) {
           // building data structure
+          let occupied = false;
           let building = {
             id: buildingId,
             name: currentBuilding.name,
+            buildingOccupied: false,
             floors: [],
           };
           townsFloors.forEach((floor) => {
@@ -90,13 +92,24 @@ async function getTownsBuildingsFloors(req, res) {
                 number: floor.number,
                 floorOccupied: floor.floorOccupied,
               });
+              if (floor.floorOccupied == true) {
+                occupied = true;
+              }
             }
           });
+          building.buildingOccupied = occupied;
           town.buildings.push(building);
         }
       });
       housing.push(town);
     });
+
+    // housing = housing.map(town => {
+    //   town.buildings.forEach(building => {
+    //     let buildingOccupied = false
+    //     building.floor
+    //   })
+    // })
 
     return res.status(200).json(housing);
   } catch (err) {
