@@ -59,35 +59,32 @@ async function getTownsBuildingsFloors(req, res) {
 
     // creates a set with unique IDs for buildings and towns
     const townIds = new Set(townsFloors.map((floor) => floor.townId));
-    const buildingIds = new Set(townsFloors.map((floor) => floor.buildingId));
 
     let housing = [];
 
     // starts to build the data structure to carry towns, buildings, and floors
-    townIds.forEach((townId) => {
-      let currentTown = towns.find((ele) => ele.id == townId);
+    towns.forEach((town) => {
       //town data structure
-      let town = {
-        id: townId,
-        name: currentTown.name,
+      let townToBeAdded = {
+        id: town.id,
+        name: town.name,
         buildings: [],
       };
-      buildingIds.forEach((buildingId) => {
+      buildings.forEach((building) => {
         // finds the data for the current building
-        let currentBuilding = buildings.find((ele) => ele.id == buildingId);
 
-        if (currentBuilding && currentBuilding.townId == townId) {
+        if (building.townId == town.id) {
           // building data structure
           let occupied = false;
-          let building = {
-            id: buildingId,
-            name: currentBuilding.name,
+          let buildingToBeAdded = {
+            id: building.id,
+            name: building.name,
             buildingOccupied: false,
             floors: [],
           };
           townsFloors.forEach((floor) => {
-            if (floor.buildingId == buildingId) {
-              building.floors.push({
+            if (floor.buildingId == building.id) {
+              buildingToBeAdded.floors.push({
                 id: floor.id,
                 number: floor.number,
                 floorOccupied: floor.floorOccupied,
@@ -97,27 +94,18 @@ async function getTownsBuildingsFloors(req, res) {
               }
             }
           });
-          building.buildingOccupied = occupied;
-          town.buildings.push(building);
+          buildingToBeAdded.buildingOccupied = occupied;
+          townToBeAdded.buildings.push(buildingToBeAdded);
         }
       });
-      housing.push(town);
+      housing.push(townToBeAdded);
     });
-
-    // housing = housing.map(town => {
-    //   town.buildings.forEach(building => {
-    //     let buildingOccupied = false
-    //     building.floor
-    //   })
-    // })
-
     return res.status(200).json(housing);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
-
 // ------------------------------------------------------------------------------
 
 async function getFloorRoomsBeds(req, res) {
