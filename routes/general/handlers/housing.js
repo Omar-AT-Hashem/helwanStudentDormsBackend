@@ -161,9 +161,51 @@ async function getFloorRoomsBeds(req, res) {
 
 // ------------------------------------------------------------------------------
 
+async function traceStudentHousing(req, res) {
+  try {
+    const { studentId } = req.params;
+    const bed = await conn.awaitQuery("SELECT * FROM beds WHERE occupant = ?", [
+      studentId,
+    ]);
+
+    if (bed.length > 0) {
+      const room = await conn.awaitQuery("SELECT * FROM rooms WHERE id = ?", [
+        bed[0].roomId,
+      ]);
+
+      const floor = await conn.awaitQuery("SELECT * FROM floors WHERE id = ?", [
+        room[0].floorId,
+      ]);
+
+      const building = await conn.awaitQuery(
+        "SELECT * FROM buildings WHERE id = ?",
+        [floor[0].buildingId]
+      );
+
+      const town = await conn.awaitQuery("SELECT * FROM towns WHERE id = ?", [
+        building[0].townId,
+      ]);
+      return res.status(200).json({
+        town: town[0],
+        building: building[0],
+        floor: floor[0],
+        room: room[0],
+        bed: bed[0],
+        message: "found",
+      });
+    }
+    return res.status(200).json({ message: "not found" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// ------------------------------------------------------------------------------
+
 housing.get("/", getHousingData);
-// housing.get("/get-towns-buildings", getTownsBuildings);
 housing.get("/towns-buildings-floors", getTownsBuildingsFloors);
 housing.get("/floor-rooms-beds/:floorId", getFloorRoomsBeds);
+housing.get("/trace-student/:studentId", traceStudentHousing);
 
 export default housing;
