@@ -44,4 +44,8 @@ await conn.awaitQuery(
   "CREATE TABLE penalties (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, type VARCHAR(100), reason VARCHAR(200) ,date VARCHAR(30) , studentId INT ,FOREIGN KEY (studentId) REFERENCES students(id) ON DELETE CASCADE);"
 );
 
+await conn.awaitQuery(
+  "CREATE TABLE fees (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), necessaryForNutrition VARCHAR(10));"
+);
+
 process.exit(0);
