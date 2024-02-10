@@ -65,11 +65,11 @@ async function update(req, res) {
 //----------------------------------------------------------------
 
 async function deleteById(req, res) {
-  const dateId = req.params.id;
+  const feeId = req.params.id;
   try {
-    await conn.awaitQuery("DELETE FROM fees WHERE id = ?", [dateId]);
+    await conn.awaitQuery("DELETE FROM fees WHERE id = ?", [feeId]);
     return res.status(200).json({
-      message: `date with Id = ${instructionId} was deleted successfully`,
+      message: `date with Id = ${feeId} was deleted successfully`,
     });
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
