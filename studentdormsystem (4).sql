@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 08, 2024 at 09:54 AM
+-- Generation Time: Feb 12, 2024 at 09:02 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -41,7 +41,8 @@ CREATE TABLE `applicationdates` (
 INSERT INTO `applicationdates` (`id`, `studentType`, `startDate`, `endDate`) VALUES
 (13, 'fdsdfs', '2023-10-11', '2023-11-03'),
 (14, '66887', '2024-01-11', '2024-01-16'),
-(15, 'new', '2024-01-17', '2024-01-16');
+(15, 'new', '2024-01-17', '2024-01-16'),
+(18, 'sdklajhfjklash', '2024-01-30', '2024-02-08');
 
 -- --------------------------------------------------------
 
@@ -67,8 +68,7 @@ INSERT INTO `beds` (`id`, `number`, `roomId`, `isOccupied`, `occupant`) VALUES
 (5, 5, 2, 1, 3),
 (10, 88, 11, 0, NULL),
 (11, 89, 10, 0, NULL),
-(18, 4, 1, 1, 5),
-(23, 5, 1, 0, NULL),
+(18, 4, 1, 0, NULL),
 (48, 46546, 1, 0, NULL),
 (50, 123, 39, 0, NULL),
 (51, 45, 29, 0, NULL),
@@ -89,7 +89,8 @@ INSERT INTO `beds` (`id`, `number`, `roomId`, `isOccupied`, `occupant`) VALUES
 (72, 3243, 2, 0, NULL),
 (76, 34, 1, 0, NULL),
 (81, 33, 44, 0, NULL),
-(82, 334, 44, 0, NULL);
+(82, 334, 44, 0, NULL),
+(83, 65, 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -176,6 +177,28 @@ CREATE TABLE `employees` (
 
 INSERT INTO `employees` (`id`, `name`, `username`, `password`) VALUES
 (1, 'omar', 'omar1', '$2b$10$mm1a.2gmFmQAuLb.wmyNieTHdl6QJ7f09B0FwWdbvfRzMGKKsLsjC');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fees`
+--
+
+CREATE TABLE `fees` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `necessaryForNutrition` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `fees`
+--
+
+INSERT INTO `fees` (`id`, `name`, `necessaryForNutrition`) VALUES
+(1, 'new1', 'yes'),
+(2, 'new2', 'no'),
+(7, 'adsasd', 'no'),
+(8, 'saasaserr', 'yes');
 
 -- --------------------------------------------------------
 
@@ -287,7 +310,8 @@ INSERT INTO `rooms` (`id`, `number`, `floorId`) VALUES
 (40, 43, 1),
 (41, 234, 1),
 (44, 1, 21),
-(45, 224, 21);
+(45, 224, 21),
+(46, 434, 1);
 
 -- --------------------------------------------------------
 
@@ -345,7 +369,7 @@ INSERT INTO `students` (`id`, `nationalId`, `name`, `birthday`, `age`, `distance
 (2, '1234', 'adel', '2023-09-19', 18, 540, '2023-11-21', 'gfdgfd', NULL, 'M', 'fghdfghd', 'fgdfgfgdfgd', 'hfgdghfdghfdz3gfdftgdfg@fsdtfgdgdfgg', 'مسيحى', 'fghdfghd', 'hfgdfghd', 'dfghdfghd', 'hgdfghdfhg', 'dfgsgfdsdfgs', 'hdhfdf', 'fdhfd', 'fghdhfgdhd', 'fgdghfdfghdhfgdfgh', 'fghdhgfzd', 0, 0, 1, 'أزهرى أدبى', 0, '200', 'سكن عادى', 0, '$2b$10$vp8IFqfumpwS/IWc1v9Yy.FbHN.VuXXG54M1Czz3i9l56nij6g.hW', '1234', 1, 1, 0, 0),
 (3, '12345', 'testname', '2023-11-10', 19, 332, '2023-11-22', 'edrsfgdsdfgs', '/me1701095641268.png', 'M', 'dfsdfsdfgs', 'sdfsdfsdfgds', 'dfgsgdfs', 'مسيحى', 'dfgsgdfs', 'dfsdfsdfgs', 'dfgsdfgsdfgsdfg', 'dfgdfgsdfgs', 'dfsdfgsdfgsdfg', 'dfsdfgsdfgs', 'dfsdfsdfs', 'dfsdfgsdfg', 'dfgsgdfs', 'dfgsdgfsgf', 0, 1, 1, 'علمى رياضة', 1, '45', 'سكن عادى', 0, '$2b$10$kdtZ6hG9Tzc3mdT3qgAqbeLIAiT9hWeFDoLVdjqHbEonfqjIbvvBy', '12345', 0, 1, 1, 1),
 (4, '1234566', 'dfgfgdfg', '2023-11-14', 20, 1001, '2023-11-26', 'dfsgdfsdfgs', NULL, 'F', 'dfgsdfgsgdfs', 'sgfsgdfsgfds', 'sdfgssdfgsgdfsgfds', 'مسلم', 'sgfdsgfds', 'fgdsgfdsgfd', 'sdfgsgdfsgdfs', 'dfgsdfgs', 'sdfgsdfgsdfg', 'dfgsgdfs', 'dfgsgdfs', 'dfgsdfgs', 'gfdgfdfg', 'fgdsfghd', 1, 1, 0, 'أزهرى علمى', 3, '20', 'سكن عادى', 1, '$2b$10$dPEAevq4eymdsyNTNOuTN.mzSy2PSadsK.Ae7FJcq//SolI0WRgsS', '1234566', 0, 0, 0, 0),
-(5, '111', 'gesdgsgdfsddf', '2024-01-17', 25, 1000, '2024-1-6', 'dgsgfdsdgf', NULL, 'M', '35435434', '56465445', 'sffd@sfdgsfgd', 'مسلم', 'sesesesesafdasdf', 'sdasdfasdfa', '42342342', 'asdafdsadfs', '54654', 'sdafdsasdfa', '342432342', 'asfdsasdfa', 'asasa', 'yuuytgjhg8-ghfhgfghg', 0, 0, 0, 'أدبى', 0, '333', 'سكن عادى', 0, '$2b$10$L2tFFr8z1xpgFdIADtsEYuU.Qfsg3dNMu7rSgNULp8W6qTfK0aVFu', '111', 1, 1, 1, 1),
+(5, '111', 'gesdgsgdfsddf', '2024-01-17', 25, 1000, '2024-1-6', 'dgsgfdsdgf', NULL, 'M', '35435434', '56465445', 'sffd@sfdgsfgd', 'مسلم', 'sesesesesafdasdf', 'sdasdfasdfa', '42342342', 'asdafdsadfs', '54654', 'sdafdsasdfa', '342432342', 'asfdsasdfa', 'asasa', 'yuuytgjhg8-ghfhgfghg', 0, 0, 0, 'أدبى', 0, '333', 'سكن عادى', 0, '$2b$10$L2tFFr8z1xpgFdIADtsEYuU.Qfsg3dNMu7rSgNULp8W6qTfK0aVFu', '111', 1, 1, 1, 0),
 (6, '112222', 'ersfdgsdfgs', '2002-03-21', 19, 20, '2024-1-6', 'fasdfasdfa', NULL, 'F', 'sfdsdfsdfs', 'sdfasda', 'dfgsfd@fsdfsdf', 'مسلم', 'dfsdfsdfs', 'sddfgsgdfsdfg', 'dfgsdfgsdfgsdf', 'dfgsdfgsdfgs', 'sdfasdfasdfa', 'sdfgsdfgs', 'dfgsgdfsdfg', 'sdaasdfasdf', 'dfgsdfgsdfgs', 'dsdfgsdfgsdfg', 1, 0, 1, 'أزهرى علمى', 0, '3.7', 'سكن عادى', 0, '$2b$10$Txdra3FdagBe3RMOkdvkVeu7NLDpN3TAjh0cmWcEhe2NH/qES6MKq', '112222', 1, 0, 0, 0),
 (7, '435434535', 'fdsdfsdfs', '2003-03-21', 33, 110, '2024-1-6', 'dfsdfsdfsf', NULL, 'M', 'dfsfdsdfs', 'sdfasdfafs', 'dfsdfsdf@fdsdfsdf', 'مسيحى', 'fdsdfsdfs', 'dfsdfsdfs', 'dfsdfsdfs', 'dfsdfgsgdfs', 'sfafsdasdf', 'gdsdfgsdfg', 'dfsdfsdfs', 'fsaasdfasdf', 'dfsdfsfdsfd', 'dfsdfsf', 1, 0, 0, 'أدبى', 0, '456', 'سكن عادى', 1, '$2b$10$yzcfZlrkH2r5hRDgvKGSRO/WMXbkpbgpeULvt.iCNmEhsVWvj/bse', '435434535', 1, 1, 1, 1),
 (8, '111231453543', 'fsdfsfd', '1996-05-07', 27, 11.1611, '2024-1-6', 'wdasdads', NULL, 'F', 'sdasdasda', 'asdasd', 'dsasdasdasd', 'مسلم', 'sasdasda', 'sdasdasdas', 'adsasda', 'sdasdasdasd', 'dsasda', 'asdasdasd', 'asdasdaasd', 'sdasda', 'sasdasda', 'sasasda', 0, 1, 0, 'معاهد فنية ثلاث سنوات', 4, '45', 'سكن عادى', 0, '$2b$10$cCc7BCQy2zIyQJ.ltqymJetohWzYpngkYtyGuckTuNTmuE.jYLhy2', '111231453543', 0, 1, 1, 1),
@@ -414,6 +438,12 @@ ALTER TABLE `employees`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `fees`
+--
+ALTER TABLE `fees`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `floors`
 --
 ALTER TABLE `floors`
@@ -460,13 +490,13 @@ ALTER TABLE `towns`
 -- AUTO_INCREMENT for table `applicationdates`
 --
 ALTER TABLE `applicationdates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `beds`
 --
 ALTER TABLE `beds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT for table `blockmeals`
@@ -478,7 +508,7 @@ ALTER TABLE `blockmeals`
 -- AUTO_INCREMENT for table `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -491,6 +521,12 @@ ALTER TABLE `categories`
 --
 ALTER TABLE `employees`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `fees`
+--
+ALTER TABLE `fees`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `floors`
@@ -514,7 +550,7 @@ ALTER TABLE `penalties`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -526,7 +562,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `towns`
 --
 ALTER TABLE `towns`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
