@@ -79,6 +79,7 @@ async function getTownsBuildingsFloors(req, res) {
           let buildingToBeAdded = {
             id: building.id,
             name: building.name,
+            type: building.type,
             buildingOccupied: false,
             floors: [],
           };

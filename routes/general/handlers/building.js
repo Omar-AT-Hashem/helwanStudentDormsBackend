@@ -18,17 +18,17 @@ async function index(req, res) {
 
 async function create(req, res) {
   try {
-    const { name, townId } = req.body;
+    const { name, type, townId } = req.body;
 
-    if (!name || !townId) {
+    if (!name || !type || !townId) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
     const created = await conn.awaitQuery(
-      "INSERT INTO buildings (name, townId) VALUES (?,?)",
-      [name, townId]
+      "INSERT INTO buildings (name, type, townId) VALUES (?,?,?)",
+      [name, type, townId]
     );
 
     res.status(201).json({ message: "Building created", id: created.insertId });

@@ -9,7 +9,7 @@ await conn.awaitQuery(
 );
 
 await conn.awaitQuery(
-  "CREATE TABLE buildings (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), townId INT , FOREIGN KEY (townId) REFERENCES towns(id) ON DELETE CASCADE);"
+  "CREATE TABLE buildings (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), type VARCHAR(10), townId INT , FOREIGN KEY (townId) REFERENCES towns(id) ON DELETE CASCADE);"
 );
 
 await conn.awaitQuery(
@@ -17,7 +17,7 @@ await conn.awaitQuery(
 );
 
 await conn.awaitQuery(
-  "CREATE TABLE rooms (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, number INT, floorId INT , FOREIGN KEY (floorId) REFERENCES floors(id) ON DELETE CASCADE);"
+  "CREATE TABLE rooms (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, number INT, type VARCHAR(40), floorId INT , FOREIGN KEY (floorId) REFERENCES floors(id) ON DELETE CASCADE);"
 );
 
 await conn.awaitQuery(
