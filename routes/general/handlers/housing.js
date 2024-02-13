@@ -129,6 +129,7 @@ async function getFloorRoomsBeds(req, res) {
       let room = {
         id: roomId,
         number: currentRoom.number,
+        type: currentRoom.type,
         beds: [],
       };
       roomsBeds.forEach((bed) => {
