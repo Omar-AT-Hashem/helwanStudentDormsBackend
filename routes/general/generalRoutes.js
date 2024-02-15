@@ -15,6 +15,7 @@ import town from "./handlers/town.js";
 import penalty from "./handlers/penalty.js";
 import blockmeals from "./handlers/blockmeals.js";
 import fee from "./handlers/fee.js";
+import studentfee from "./handlers/studentfee.js";
 
 const generalRoutes = Router();
 
@@ -38,7 +39,10 @@ generalRoutes.use("/housing", housing);
 //------------------ End Housing Routes -----------------------
 
 generalRoutes.use("/fee", fee);
+generalRoutes.use("/studentfee", studentfee);
 generalRoutes.use("/penalty", penalty);
 generalRoutes.use("/blockmeals", blockmeals);
+
+
 
 export default generalRoutes;

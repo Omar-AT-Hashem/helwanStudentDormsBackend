@@ -48,4 +48,11 @@ await conn.awaitQuery(
   "CREATE TABLE fees (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), necessaryForNutrition VARCHAR(10));"
 );
 
+await conn.awaitQuery(
+  "CREATE TABLE studentfees (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, isPayed INT, type VARCHAR(50), sum FLOAT, date VARCHAR(50), studentId int ,FOREIGN KEY (studentId) REFERENCES students(id) ON DELETE CASCADE);"
+);
+
+
+
+
 process.exit(0);
