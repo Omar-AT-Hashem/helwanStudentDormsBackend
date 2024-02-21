@@ -16,6 +16,7 @@ import penalty from "./handlers/penalty.js";
 import blockmeals from "./handlers/blockmeals.js";
 import fee from "./handlers/fee.js";
 import studentfee from "./handlers/studentfee.js";
+import log from "./handlers/log.js";
 
 const generalRoutes = Router();
 
@@ -43,6 +44,6 @@ generalRoutes.use("/studentfee", studentfee);
 generalRoutes.use("/penalty", penalty);
 generalRoutes.use("/blockmeals", blockmeals);
 
-
+generalRoutes.use("/log", log);
 
 export default generalRoutes;

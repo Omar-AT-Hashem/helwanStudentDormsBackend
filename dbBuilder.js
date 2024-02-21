@@ -52,7 +52,8 @@ await conn.awaitQuery(
   "CREATE TABLE studentfees (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, isPayed INT, type VARCHAR(50), sum FLOAT, date VARCHAR(50), studentId int ,FOREIGN KEY (studentId) REFERENCES students(id) ON DELETE CASCADE);"
 );
 
-
-
+await conn.awaitQuery(
+  "CREATE TABLE logs (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, adminId INT, adminName VARCHAR(200), adminUsername VARCHAR(200), action VARCHAR(300), objectId VARCHAR(100), objectName VARCHAR(200), dateTime DATETIME);"
+);
 
 process.exit(0);
