@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2024 at 04:28 PM
+-- Generation Time: Feb 21, 2024 at 06:10 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -136,8 +136,7 @@ INSERT INTO `buildings` (`id`, `name`, `type`, `townId`) VALUES
 (2, 'building 2', 'M', 1),
 (3, 'building 1', 'F', 3),
 (4, 'building 2', 'M', 3),
-(11, 'building 3', 'F', 1),
-(13, 'aa', 'M', 1);
+(11, 'building 3', 'F', 1);
 
 -- --------------------------------------------------------
 
@@ -178,7 +177,8 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`id`, `name`, `username`, `password`) VALUES
-(1, 'omar', 'omar1', '$2b$10$mm1a.2gmFmQAuLb.wmyNieTHdl6QJ7f09B0FwWdbvfRzMGKKsLsjC');
+(1, 'omar', 'omar1', '$2b$10$mm1a.2gmFmQAuLb.wmyNieTHdl6QJ7f09B0FwWdbvfRzMGKKsLsjC'),
+(2, 'shenuda', 'shenuda1', '$2b$10$Rn5j/wbhed8JzIjLLvLTxuqYXVv8d7hMjHWpQrvd0zilprWzkalMa');
 
 -- --------------------------------------------------------
 
@@ -200,7 +200,8 @@ INSERT INTO `fees` (`id`, `name`, `necessaryForNutrition`) VALUES
 (1, 'new1', 'yes'),
 (2, 'new2', 'no'),
 (7, 'adsasd', 'no'),
-(8, 'saasaserr', 'yes');
+(8, 'saasaserr', 'yes'),
+(9, 'normal rescidence', 'no');
 
 -- --------------------------------------------------------
 
@@ -260,6 +261,33 @@ INSERT INTO `instructions` (`id`, `instruction`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `logs`
+--
+
+CREATE TABLE `logs` (
+  `id` int(11) NOT NULL,
+  `adminId` int(11) NOT NULL,
+  `adminName` varchar(200) NOT NULL,
+  `adminUsername` varchar(200) NOT NULL,
+  `action` varchar(300) NOT NULL,
+  `objectId` varchar(100) NOT NULL,
+  `objectName` varchar(200) NOT NULL,
+  `dateTime` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `logs`
+--
+
+INSERT INTO `logs` (`id`, `adminId`, `adminName`, `adminUsername`, `action`, `objectId`, `objectName`, `dateTime`) VALUES
+(50, 1, 'omar', 'omar1', 'اضافه مبني جديد بأسم \"2231\" لمدينه \"town 1\"', '29', '2231', '2024-02-21 17:05:15'),
+(51, 1, 'omar', 'omar1', ' ازاله مبني بأسم \"2231\" من مدينه \"town 1\"', '29', '2231', '2024-02-21 17:05:16'),
+(52, 1, 'omar', 'omar1', 'اضافه دور برقم \"4\" لمبني \"building 1\" في مدينه \"town 1\"', '24', '4', '2024-02-21 17:05:38'),
+(53, 1, 'omar', 'omar1', 'ازاله دور برقم \"4\" من مبني \"building 1\" في مدينه \"town 1\"', '24', '4', '2024-02-21 17:05:38');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `penalties`
 --
 
@@ -315,7 +343,35 @@ INSERT INTO `rooms` (`id`, `number`, `type`, `floorId`) VALUES
 (44, 1, 'سكن عادي', 21),
 (45, 224, 'سكن عادي', 21),
 (48, 576, 'سكن مميز', 1),
-(51, 33, 'سكن عادي', 1);
+(51, 33, 'سكن عادي', 1),
+(52, 576, 'سكن عادي', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `studentfees`
+--
+
+CREATE TABLE `studentfees` (
+  `id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `isPayed` int(11) NOT NULL,
+  `sum` float NOT NULL,
+  `date` varchar(50) NOT NULL,
+  `studentId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `studentfees`
+--
+
+INSERT INTO `studentfees` (`id`, `type`, `isPayed`, `sum`, `date`, `studentId`) VALUES
+(1, 'new1', 0, 334, '2024-02-15', 5),
+(2, 'new2', 0, 223, '2024-02-07', 5),
+(3, 'saasaserr', 0, 5767, '2024-02-06', 5),
+(4, 'adsasd', 1, 5765, '2024-02-13', 5),
+(5, 'new2', 1, 576, '2024-02-13', 7),
+(6, 'adsasd', 1, 343, '2024-02-22', 7);
 
 -- --------------------------------------------------------
 
@@ -397,7 +453,8 @@ CREATE TABLE `towns` (
 
 INSERT INTO `towns` (`id`, `name`) VALUES
 (1, 'town 1'),
-(3, 'town 2');
+(3, 'town 2'),
+(43, '556');
 
 --
 -- Indexes for dumped tables
@@ -462,6 +519,12 @@ ALTER TABLE `instructions`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `penalties`
 --
 ALTER TABLE `penalties`
@@ -474,6 +537,13 @@ ALTER TABLE `penalties`
 ALTER TABLE `rooms`
   ADD PRIMARY KEY (`id`),
   ADD KEY `floorId` (`floorId`);
+
+--
+-- Indexes for table `studentfees`
+--
+ALTER TABLE `studentfees`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `studentfeesStudentFK` (`studentId`);
 
 --
 -- Indexes for table `students`
@@ -513,7 +583,7 @@ ALTER TABLE `blockmeals`
 -- AUTO_INCREMENT for table `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -525,25 +595,31 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `fees`
 --
 ALTER TABLE `fees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `floors`
 --
 ALTER TABLE `floors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `instructions`
 --
 ALTER TABLE `instructions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+
+--
+-- AUTO_INCREMENT for table `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `penalties`
@@ -555,7 +631,13 @@ ALTER TABLE `penalties`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+
+--
+-- AUTO_INCREMENT for table `studentfees`
+--
+ALTER TABLE `studentfees`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -567,7 +649,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `towns`
 --
 ALTER TABLE `towns`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Constraints for dumped tables
@@ -608,6 +690,12 @@ ALTER TABLE `penalties`
 --
 ALTER TABLE `rooms`
   ADD CONSTRAINT `rooms_ibfk_1` FOREIGN KEY (`floorId`) REFERENCES `floors` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `studentfees`
+--
+ALTER TABLE `studentfees`
+  ADD CONSTRAINT `studentfeesStudentFK` FOREIGN KEY (`studentId`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
