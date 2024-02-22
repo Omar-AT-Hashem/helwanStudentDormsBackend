@@ -40,10 +40,12 @@ async function create(req, res) {
         .json({ message: "Please provide all the required fields" });
     }
 
-    const currentDateTime = new Date()
+    const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+    const currentDateTime = new Date(Date.now() - timezoneOffset)
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
+      
 
     const created = await conn.awaitQuery(
       "INSERT INTO logs (adminId, adminName, adminUsername, action, objectId, objectName, dateTime) VALUES (?,?,?,?,?,?,?)",
