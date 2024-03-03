@@ -40,7 +40,7 @@ async function create(req, res) {
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
-
+    
     const created = await conn.awaitQuery(
       "INSERT INTO blockmeals (fromDate, toDate, meal, reason, studentId) VALUES (?,?,?,?,?)",
       [fromDate, toDate, meal, reason, studentId]

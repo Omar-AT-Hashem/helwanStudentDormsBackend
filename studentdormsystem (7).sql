@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 21, 2024 at 06:10 PM
+-- Generation Time: Mar 03, 2024 at 11:41 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -136,7 +136,8 @@ INSERT INTO `buildings` (`id`, `name`, `type`, `townId`) VALUES
 (2, 'building 2', 'M', 1),
 (3, 'building 1', 'F', 3),
 (4, 'building 2', 'M', 3),
-(11, 'building 3', 'F', 1);
+(11, 'building 3', 'F', 1),
+(30, 'dfsfdsdfs', 'M', 1);
 
 -- --------------------------------------------------------
 
@@ -169,16 +170,21 @@ CREATE TABLE `employees` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `username` varchar(100) DEFAULT NULL,
-  `password` varchar(100) DEFAULT NULL
+  `password` varchar(100) DEFAULT NULL,
+  `creating` int(11) NOT NULL,
+  `reading` int(11) NOT NULL,
+  `deleting` int(11) NOT NULL,
+  `updating` int(11) NOT NULL,
+  `creatingEmployee` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `employees`
 --
 
-INSERT INTO `employees` (`id`, `name`, `username`, `password`) VALUES
-(1, 'omar', 'omar1', '$2b$10$mm1a.2gmFmQAuLb.wmyNieTHdl6QJ7f09B0FwWdbvfRzMGKKsLsjC'),
-(2, 'shenuda', 'shenuda1', '$2b$10$Rn5j/wbhed8JzIjLLvLTxuqYXVv8d7hMjHWpQrvd0zilprWzkalMa');
+INSERT INTO `employees` (`id`, `name`, `username`, `password`, `creating`, `reading`, `deleting`, `updating`, `creatingEmployee`) VALUES
+(1, 'omar', 'omar1', '$2b$10$mm1a.2gmFmQAuLb.wmyNieTHdl6QJ7f09B0FwWdbvfRzMGKKsLsjC', 1, 1, 1, 1, 1),
+(3, 'omar', 'omar2', '$2b$10$VCV4BAEg9UuEl5Yw5XnM.eNIKJ5SjGuyseDLfQ6DqF6P/2iLYG.OS', 0, 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -283,7 +289,8 @@ INSERT INTO `logs` (`id`, `adminId`, `adminName`, `adminUsername`, `action`, `ob
 (50, 1, 'omar', 'omar1', 'اضافه مبني جديد بأسم \"2231\" لمدينه \"town 1\"', '29', '2231', '2024-02-21 17:05:15'),
 (51, 1, 'omar', 'omar1', ' ازاله مبني بأسم \"2231\" من مدينه \"town 1\"', '29', '2231', '2024-02-21 17:05:16'),
 (52, 1, 'omar', 'omar1', 'اضافه دور برقم \"4\" لمبني \"building 1\" في مدينه \"town 1\"', '24', '4', '2024-02-21 17:05:38'),
-(53, 1, 'omar', 'omar1', 'ازاله دور برقم \"4\" من مبني \"building 1\" في مدينه \"town 1\"', '24', '4', '2024-02-21 17:05:38');
+(53, 1, 'omar', 'omar1', 'ازاله دور برقم \"4\" من مبني \"building 1\" في مدينه \"town 1\"', '24', '4', '2024-02-21 17:05:38'),
+(54, 1, 'omar', 'omar1', 'اضافه موظف جديد بالاسم omar', '3', 'omar', '2024-03-03 11:50:54');
 
 -- --------------------------------------------------------
 
@@ -344,7 +351,7 @@ INSERT INTO `rooms` (`id`, `number`, `type`, `floorId`) VALUES
 (45, 224, 'سكن عادي', 21),
 (48, 576, 'سكن مميز', 1),
 (51, 33, 'سكن عادي', 1),
-(52, 576, 'سكن عادي', 1);
+(53, 6576, 'سكن مميز', 1);
 
 -- --------------------------------------------------------
 
@@ -583,7 +590,7 @@ ALTER TABLE `blockmeals`
 -- AUTO_INCREMENT for table `buildings`
 --
 ALTER TABLE `buildings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -595,7 +602,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `fees`
@@ -619,7 +626,7 @@ ALTER TABLE `instructions`
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `penalties`
@@ -631,7 +638,7 @@ ALTER TABLE `penalties`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `studentfees`
