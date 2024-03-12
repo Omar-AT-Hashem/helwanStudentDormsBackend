@@ -10,8 +10,8 @@ const buildStructure = async () => {
     );
     faculty.departments.forEach(async (department) => {
       let addedDepartment = await conn.awaitQuery(
-        "INSERT INTO departments (name, facultyId) VALUES (?, ?)",
-        [department.name, addedFaculty.insertId]
+        "INSERT INTO departments (name,type, facultyId) VALUES (?, ?,?)",
+        [department.name, department.type, addedFaculty.insertId]
       );
       department.programs.forEach(async (program) => {
         let addedProgram = await conn.awaitQuery(
