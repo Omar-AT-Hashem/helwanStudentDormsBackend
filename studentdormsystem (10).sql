@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 12, 2024 at 03:35 PM
+-- Generation Time: Mar 13, 2024 at 10:43 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -1832,6 +1832,37 @@ INSERT INTO `programs` (`id`, `departmentId`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `recievedmeals`
+--
+
+CREATE TABLE `recievedmeals` (
+  `id` int(11) NOT NULL,
+  `studentNationalId` varchar(20) NOT NULL,
+  `breakfast` int(11) NOT NULL,
+  `lunch` int(11) NOT NULL,
+  `dinner` int(11) NOT NULL,
+  `date` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `recievedmeals`
+--
+
+INSERT INTO `recievedmeals` (`id`, `studentNationalId`, `breakfast`, `lunch`, `dinner`, `date`) VALUES
+(31, '33643', 1, 1, 1, '24/4/2024'),
+(32, '576566765', 1, 0, 1, '24/4/2024'),
+(33, '65667565', 1, 1, 1, '23/4/2024'),
+(34, '45645556', 0, 0, 1, '24/4/2024'),
+(35, '777434466', 1, 1, 0, '23/4/2024'),
+(36, '678678776', 1, 1, 1, '24/4/2024'),
+(37, '656776765', 1, 1, 1, '24/4/2024'),
+(38, '6767666', 0, 0, 0, '24/4/2024'),
+(39, '67667667', 0, 1, 1, '23/4/2024'),
+(40, '4665466544', 1, 1, 0, '22/4/2024');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rooms`
 --
 
@@ -2080,6 +2111,12 @@ ALTER TABLE `programs`
   ADD KEY `programsDepartmentIDFK` (`departmentId`);
 
 --
+-- Indexes for table `recievedmeals`
+--
+ALTER TABLE `recievedmeals`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `rooms`
 --
 ALTER TABLE `rooms`
@@ -2198,6 +2235,12 @@ ALTER TABLE `penalties`
 --
 ALTER TABLE `programs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=655;
+
+--
+-- AUTO_INCREMENT for table `recievedmeals`
+--
+ALTER TABLE `recievedmeals`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `rooms`

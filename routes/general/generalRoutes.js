@@ -18,6 +18,7 @@ import fee from "./handlers/fee.js";
 import studentfee from "./handlers/studentfee.js";
 import universityStructure from "./handlers/universityStructure.js";
 import log from "./handlers/log.js";
+import recievedMeal from "./handlers/recievedMeal.js";
 
 const generalRoutes = Router();
 
@@ -46,6 +47,7 @@ generalRoutes.use("/penalty", penalty);
 generalRoutes.use("/blockmeals", blockmeals);
 
 generalRoutes.use("/university-structure", universityStructure);
+generalRoutes.use("/recieved-meal", recievedMeal);
 
 generalRoutes.use("/log", log);
 
