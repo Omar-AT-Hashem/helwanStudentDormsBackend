@@ -91,6 +91,18 @@ async function indexColumn(req, res) {
 }
 //----------------------------------------------------------------
 
+async function getByGender(req, res) {
+  try {
+    const { gender } = req.params;
+    const students = await conn.awaitQuery(
+      `SELECT * FROM students WHERE gender = '${gender}'`
+    );
+    return res.status(200).json(students);
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
 async function register(req, res) {
   try {
     const {
@@ -196,6 +208,8 @@ async function register(req, res) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     // const imageName = image.destination.replaceAll("\\", "/") + image.filename;
+    let addSerial = false;
+    let randomSerial = Math.floor(1000000 + Math.random() * 9000000);
     const username = nationalId;
     const isApproved = 0;
     const isAccepted = 0;
@@ -205,48 +219,68 @@ async function register(req, res) {
       date.getMonth() + 1
     }-${date.getDate()}`;
 
-    // Create a new user
-    const newStudent = await conn.awaitQuery(
-      "INSERT INTO students (name, birthday,age, distance, dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, academicYear, grade, accomodationType, accomodationWithNutrition, password, username, isNew, isApproved, isAccepted, isHoused) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
-      [
-        name,
-        birthday,
-        parseInt(age),
-        parseFloat(dist),
-        dateOfApplying,
-        nationalId,
-        placeOfBirth,
-        gender,
-        telephone,
-        mobile,
-        email,
-        religion,
-        faculty,
-        fatherName,
-        fatherNationalId,
-        fatherOccupation,
-        fatherNumber,
-        guardianName,
-        guardianNationalId,
-        guardianRelationship,
-        residence,
-        addressDetails,
-        parseInt(isDisabled),
-        parseInt(familyAbroad),
-        parseInt(highschoolAbroad),
-        highschoolSpecialization,
-        parseInt(academicYear),
-        parseFloat(grade),
-        accomodationType,
-        parseInt(accomodationWithNutrition),
-        hashedPassword,
-        username,
-        isNew,
-        isApproved,
-        isAccepted,
-        isHoused,
-      ]
+    const serialResult = await conn.awaitQuery(
+      "SELECT * FROM students WHERE serialNumber = ?",
+      [randomSerial]
     );
+
+    while (!addSerial) {
+      if (serialResult.length > 0) {
+        randomSerial = Math.floor(1000000 + Math.random() * 9000000);
+        serialResult = await conn.awaitQuery(
+          "SELECT * FROM students WHERE serialNumber = ?",
+          [randomSerial]
+        );
+      } else {
+        addSerial = true;
+      }
+    }
+
+    if (addSerial) {
+      // Create a new user
+      const newStudent = await conn.awaitQuery(
+        "INSERT INTO students (name, birthday,age, distance, dateOfApplying, nationalId, placeOfBirth, gender, telephone, mobile, email, religion, faculty, fatherName, fatherNationalId, fatherOccupation, fatherNumber, guardianName, guardianNationalId, guardianRelationship, residence, addressDetails, isDisabled, familyAbroad, highschoolAbroad, highschoolSpecialization, academicYear, grade, accomodationType, accomodationWithNutrition, password, username, isNew, isApproved, isAccepted, isHoused, serialNumber) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+        [
+          name,
+          birthday,
+          parseInt(age),
+          parseFloat(dist),
+          dateOfApplying,
+          nationalId,
+          placeOfBirth,
+          gender,
+          telephone,
+          mobile,
+          email,
+          religion,
+          faculty,
+          fatherName,
+          fatherNationalId,
+          fatherOccupation,
+          fatherNumber,
+          guardianName,
+          guardianNationalId,
+          guardianRelationship,
+          residence,
+          addressDetails,
+          parseInt(isDisabled),
+          parseInt(familyAbroad),
+          parseInt(highschoolAbroad),
+          highschoolSpecialization,
+          parseInt(academicYear),
+          parseFloat(grade),
+          accomodationType,
+          parseInt(accomodationWithNutrition),
+          hashedPassword,
+          username,
+          isNew,
+          isApproved,
+          isAccepted,
+          isHoused,
+          randomSerial,
+        ]
+      );
+    }
 
     res.status(201).json({ message: "User created" });
   } catch (error) {
@@ -571,6 +605,7 @@ async function meta(req, res) {
 
 student.get("/", index);
 student.get("/meta", meta);
+student.get("/get-by-gender/:gender", getByGender);
 student.get("/column/:column/:value/:descriminator/:options", indexColumn);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);

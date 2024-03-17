@@ -40,7 +40,7 @@ async function recieveMeals(req, res) {
   }
 }
 
-recievedMeal.post("/recieve-meals",upload.single("recievedMeals"),
+recievedMeal.post("/recieve-meals", upload.single("recievedMeals"),
   recieveMeals
 );
 
