@@ -19,6 +19,7 @@ import studentfee from "./handlers/studentfee.js";
 import universityStructure from "./handlers/universityStructure.js";
 import log from "./handlers/log.js";
 import recievedMeal from "./handlers/recievedMeal.js";
+import statistics from "./handlers/statistics.js";
 
 const generalRoutes = Router();
 
@@ -51,6 +52,6 @@ generalRoutes.use("/recieved-meal", recievedMeal);
 
 generalRoutes.use("/log", log);
 
-
+generalRoutes.use("/statistics", statistics);
 
 export default generalRoutes;
