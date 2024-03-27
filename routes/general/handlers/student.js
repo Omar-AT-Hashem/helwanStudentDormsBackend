@@ -471,6 +471,11 @@ async function update(req, res) {
 async function updateImage(req, res) {
   try {
     const image = req.file;
+
+    if (!image) {
+      return res.status(400).json({ message: "Please provide all the fields" });
+    }
+
     const { id } = req.body;
     const imagePath = `/${image.filename}`;
 
@@ -479,16 +484,16 @@ async function updateImage(req, res) {
       id,
     ]);
 
-    res.status(201).json({ message: "student Updated" });
+    return res.status(201).json({ message: "student Updated", filePath: imagePath });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 }
 //----------------------------------------------------------------
 async function deleteImage(req, res) {
   try {
-    const imagePath = "/default-photo.jpg";
+    const imagePath = null;
     const { id } = req.body;
     await conn.awaitQuery("UPDATE students SET image = ?  WHERE id = ?;", [
       imagePath,
