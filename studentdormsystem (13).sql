@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 28, 2024 at 09:45 PM
+-- Generation Time: Mar 30, 2024 at 09:09 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -30,10 +30,19 @@ SET time_zone = "+00:00";
 CREATE TABLE `absence` (
   `id` int(11) NOT NULL,
   `reason` varchar(300) NOT NULL,
-  `fromDate` int(11) NOT NULL,
-  `toDate` int(11) NOT NULL,
+  `fromDate` varchar(100) NOT NULL,
+  `toDate` varchar(100) NOT NULL,
   `studentId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `absence`
+--
+
+INSERT INTO `absence` (`id`, `reason`, `fromDate`, `toDate`, `studentId`) VALUES
+(3, 'asdadfg', '2024-03-06', '2024-03-06', 1),
+(4, 'sfds', '2024-03-14', '2024-03-07', 1),
+(5, 'xddfgs', '2024-03-01', '2024-03-21', 1);
 
 -- --------------------------------------------------------
 
@@ -77,7 +86,7 @@ CREATE TABLE `beds` (
 --
 
 INSERT INTO `beds` (`id`, `number`, `roomId`, `isOccupied`, `occupant`) VALUES
-(1, 1, 1, 1, 5),
+(1, 1, 1, 0, NULL),
 (3, 3, 1, 0, NULL),
 (5, 5, 2, 1, 3),
 (10, 88, 11, 0, NULL),
@@ -1501,7 +1510,15 @@ INSERT INTO `logs` (`id`, `adminId`, `adminName`, `adminUsername`, `action`, `ob
 (77, 1, 'omar', 'omar1', 'تم تعديل بيانات الطالب omar22a و الرقم القومى 123', '123', 'omar22a', '2024-03-27 15:42:14'),
 (78, 1, 'omar', 'omar1', 'تم تعديل بيانات الطالب omar22a و الرقم القومى 123777', '123777', 'omar22a', '2024-03-27 16:06:12'),
 (79, 1, 'omar', 'omar1', 'تم تعديل بيانات الطالب omar22a و الرقم القومى 12377', '12377', 'omar22a', '2024-03-27 16:07:49'),
-(80, 1, 'omar', 'omar1', 'تم تعديل بيانات الطالب omar22a و الرقم القومى 1237789', '1237789', 'omar22a', '2024-03-27 16:08:14');
+(80, 1, 'omar', 'omar1', 'تم تعديل بيانات الطالب omar22a و الرقم القومى 1237789', '1237789', 'omar22a', '2024-03-27 16:08:14'),
+(81, 1, 'omar', 'omar1', ' اضافه تصريح للطالب بسبب من تاريخ 2024-02-14 الى تاريخ 2024-03-27 للسبب 4456  omar22a و الرقم القومي 1237789 ', '1237789', 'omar22a', '2024-03-30 20:55:20'),
+(82, 1, 'omar', 'omar1', '  اضافه تصريح من 2024-03-02 الى 2024-03-13 للسبب asdad', '1237789', 'omar22a', '2024-03-30 21:00:16'),
+(83, 1, 'omar', 'omar1', 'ازاله تصريح للطالب بسبب من تاريخ undefined الى تاريخ undefined للسبب undefined  omar22a و الرقم القومي 1237789', '1237789', 'omar22a', '2024-03-30 21:01:20'),
+(84, 1, 'omar', 'omar1', 'ازاله تصريح للطالب بسبب من تاريخ undefined الى تاريخ undefined للسبب undefined  omar22a و الرقم القومي 1237789', '1237789', 'omar22a', '2024-03-30 21:01:20'),
+(85, 1, 'omar', 'omar1', '  اضافه تصريح من 2024-03-06 الى 2024-03-06 للسبب asdadfg', '1237789', 'omar22a', '2024-03-30 21:01:25'),
+(86, 1, 'omar', 'omar1', '  اضافه تصريح من 2024-03-14 الى 2024-03-07 للسبب sfds', '1237789', 'omar22a', '2024-03-30 21:02:18'),
+(87, 1, 'omar', 'omar1', '  اضافه تصريح من 2024-03-01 الى 2024-03-21 للسبب xddfgs', '1237789', 'omar22a', '2024-03-30 21:02:26'),
+(88, 1, 'omar', 'omar1', 'اضافه جزاء جديد للطالب omar22a و الرقم القومي 1237789', '1237789', 'omar22a', '2024-03-30 21:49:49');
 
 -- --------------------------------------------------------
 
@@ -1511,7 +1528,6 @@ INSERT INTO `logs` (`id`, `adminId`, `adminName`, `adminUsername`, `action`, `ob
 
 CREATE TABLE `penalties` (
   `id` int(11) NOT NULL,
-  `type` varchar(100) DEFAULT NULL,
   `reason` varchar(200) DEFAULT NULL,
   `date` varchar(30) DEFAULT NULL,
   `studentId` int(11) DEFAULT NULL
@@ -1521,12 +1537,13 @@ CREATE TABLE `penalties` (
 -- Dumping data for table `penalties`
 --
 
-INSERT INTO `penalties` (`id`, `type`, `reason`, `date`, `studentId`) VALUES
-(1, 'option2', 'dasda', '2023-12-13', 3),
-(2, 'option3', 'penalty 27897', '2023-12-14', 3),
-(3, 'option3', 'sdadsa', '2023-12-05', 3),
-(4, 'option1', 'naughty', '2023-11-30', 1),
-(5, 'option3', 'mamta7ansh', '2023-11-16', 1);
+INSERT INTO `penalties` (`id`, `reason`, `date`, `studentId`) VALUES
+(1, 'dasda', '2023-12-13', 3),
+(2, 'penalty 27897', '2023-12-14', 3),
+(3, 'sdadsa', '2023-12-05', 3),
+(4, 'naughty', '2023-11-30', 1),
+(5, 'mamta7ansh', '2023-11-16', 1),
+(6, 'sdasda', '2024-03-06', 1);
 
 -- --------------------------------------------------------
 
@@ -2202,7 +2219,7 @@ ALTER TABLE `towns`
 -- AUTO_INCREMENT for table `absence`
 --
 ALTER TABLE `absence`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `applicationdates`
@@ -2280,13 +2297,13 @@ ALTER TABLE `levels`
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `penalties`
 --
 ALTER TABLE `penalties`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `programs`

@@ -484,7 +484,9 @@ async function updateImage(req, res) {
       id,
     ]);
 
-    return res.status(201).json({ message: "student Updated", filePath: imagePath });
+    return res
+      .status(201)
+      .json({ message: "student Updated", filePath: imagePath });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server Error" });
@@ -580,6 +582,28 @@ async function approveOrReject(req, res) {
 
 //----------------------------------------------------------------
 
+async function suspend(req, res) {
+  const  id  = req.params.id;
+  console.log(id);
+  try {
+    await conn.awaitQuery(
+      "UPDATE students SET isHoused = ?, isAccepted = ?, isApproved = ? WHERE id = ?;",
+      [-1, 0, -1, id]
+    );
+
+    await conn.awaitQuery("UPDATE beds SET isOccupied = ?, occupant = ? WHERE id = ?;", [0, null, id]);
+
+    return res
+      .status(201)
+      .json({ message: "student Updated"});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 async function meta(req, res) {
   try {
     const applicantFemales = await conn.awaitQuery(
@@ -621,5 +645,6 @@ student.put("/update-image", upload.single("image"), updateImage);
 student.put("/delete-image", deleteImage);
 student.put("/", update);
 student.put("/assess-students", assessStudents);
+student.put("/suspend/:id", suspend);
 
 export default student;

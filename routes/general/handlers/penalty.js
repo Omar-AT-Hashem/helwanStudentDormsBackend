@@ -33,17 +33,17 @@ async function getByStudentId(req, res) {
 
 async function create(req, res) {
   try {
-    const { type, reason, date, studentId } = req.body;
+    const { reason, date, studentId } = req.body;
 
-    if (!type || !reason || !date || !studentId) {
+    if (!reason || !date || !studentId) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
     const created = await conn.awaitQuery(
-      "INSERT INTO penalties (type, reason, date, studentId) VALUES (?,?,?,?)",
-      [type, reason, date, studentId]
+      "INSERT INTO penalties (reason, date, studentId) VALUES (?,?,?)",
+      [reason, date, studentId]
     );
 
     res.status(201).json({ message: "Penalty created", id: created.insertId });

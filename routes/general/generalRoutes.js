@@ -20,6 +20,7 @@ import universityStructure from "./handlers/universityStructure.js";
 import log from "./handlers/log.js";
 import recievedMeal from "./handlers/recievedMeal.js";
 import statistics from "./handlers/statistics.js";
+import absence from "./handlers/absence.js";
 
 const generalRoutes = Router();
 
@@ -43,6 +44,7 @@ generalRoutes.use("/housing", housing);
 //------------------ End Housing Routes -----------------------
 
 generalRoutes.use("/fee", fee);
+generalRoutes.use("/absence", absence)
 generalRoutes.use("/studentfee", studentfee);
 generalRoutes.use("/penalty", penalty);
 generalRoutes.use("/blockmeals", blockmeals);
