@@ -512,18 +512,107 @@ async function assessStudents(req, res) {
   try {
     const numberOFStudentsToBeAccepted = 6;
 
-    const assessmentSql =
-      "SELECT * FROM students WHERE isApproved = ? ORDER BY isNew ASC, academicYear DESC, grade DESC, age ASC, distance DESC;";
+    const malesNormal = await conn.awaitQuery(
+      "SELECT * FROM students WHERE isApproved = ? AND gender = ? AND accomodationType = ? ORDER BY isNew ASC, academicYear DESC, grade DESC, age ASC, distance DESC;",
+      [1, "M", "سكن عادي"]
+    );
 
-    const assessedStudents = await conn.awaitQuery(assessmentSql, [1]);
+    const femalesNomral = await conn.awaitQuery(
+      "SELECT * FROM students WHERE isApproved = ? AND gender = ? AND accomodationType = ? ORDER BY isNew ASC, academicYear DESC, grade DESC, age ASC, distance DESC;",
+      [1, "F", "سكن عادي"]
+    );
 
-    const selectedStudents = assessedStudents.slice(
-      0,
-      numberOFStudentsToBeAccepted
+    const malesSpecial = await conn.awaitQuery(
+      "SELECT * FROM students WHERE isApproved = ? AND gender = ? AND accomodationType = ? ORDER BY isNew ASC, academicYear DESC, grade DESC, age ASC, distance DESC;",
+      [1, "M", "سكن مميز"]
+    );
+
+    const femalesSpecial = await conn.awaitQuery(
+      "SELECT * FROM students WHERE isApproved = ? AND gender = ? AND accomodationType = ? ORDER BY isNew ASC, academicYear DESC, grade DESC, age ASC, distance DESC;",
+      [1, "F", "سكن مميز"]
+    );
+
+    const malesNormalBeds = await conn.awaitQuery(
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
+      ["سكن عادي", "M"]
+    );
+    const femalesNormalBeds = await conn.awaitQuery(
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
+      ["سكن عادي", "F"]
+    );
+    const malesSpecialBeds = await conn.awaitQuery(
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
+      ["سكن مميز", "M"]
+    );
+    const femalesSpecialBeds = await conn.awaitQuery(
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
+      ["سكن مميز", "F"]
+    );
+
+    let selectedMalesNormal = null;
+    let selectedMalesSpecial = null;
+    let selectedFemalesNormal = null;
+    let selectedFemalesSpecial = null;
+
+    if (malesNormal.length < malesNormalBeds.length) {
+      selectedMalesNormal = malesNormal;
+    } else {
+      selectedMalesNormal = malesNormal.slice(0, malesNormalBeds.length - 1);
+    }
+
+    if (femalesNomral < femalesNormalBeds) {
+      selectedFemalesNormal = femalesNomral;
+    } else {
+      selectedFemalesNormal = femalesNomral.slice(
+        0,
+        femalesNormalBeds.length - 1
+      );
+    }
+
+    if (malesSpecial < malesSpecialBeds) {
+      selectedMalesSpecial = malesSpecial;
+    } else {
+      selectedMalesSpecial = malesSpecial.slice(0, malesSpecialBeds.length - 1);
+    }
+
+    if (femalesSpecial < femalesSpecialBeds) {
+      selectedFemalesSpecial = femalesSpecial;
+    } else {
+      selectedFemalesSpecial = femalesSpecial.slice(
+        0,
+        femalesSpecialBeds.length - 1
+      );
+    }
+
+    await Promise.all(
+      selectedMalesNormal.map((student) => {
+        return conn.awaitQuery(
+          "UPDATE students SET isAccepted = ?  WHERE id = ?",
+          [1, student.id]
+        );
+      })
     );
 
     await Promise.all(
-      selectedStudents.map((student) => {
+      selectedFemalesNormal.map((student) => {
+        return conn.awaitQuery(
+          "UPDATE students SET isAccepted = ?  WHERE id = ?",
+          [1, student.id]
+        );
+      })
+    );
+
+    await Promise.all(
+      selectedMalesSpecial.map((student) => {
+        return conn.awaitQuery(
+          "UPDATE students SET isAccepted = ?  WHERE id = ?",
+          [1, student.id]
+        );
+      })
+    );
+
+    await Promise.all(
+      selectedFemalesSpecial.map((student) => {
         return conn.awaitQuery(
           "UPDATE students SET isAccepted = ?  WHERE id = ?",
           [1, student.id]
@@ -583,7 +672,7 @@ async function approveOrReject(req, res) {
 //----------------------------------------------------------------
 
 async function suspend(req, res) {
-  const  id  = req.params.id;
+  const id = req.params.id;
   console.log(id);
   try {
     await conn.awaitQuery(
@@ -591,11 +680,12 @@ async function suspend(req, res) {
       [-1, 0, -1, id]
     );
 
-    await conn.awaitQuery("UPDATE beds SET isOccupied = ?, occupant = ? WHERE id = ?;", [0, null, id]);
+    await conn.awaitQuery(
+      "UPDATE beds SET isOccupied = ?, occupant = ? WHERE id = ?;",
+      [0, null, id]
+    );
 
-    return res
-      .status(201)
-      .json({ message: "student Updated"});
+    return res.status(201).json({ message: "student Updated" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server Error" });
