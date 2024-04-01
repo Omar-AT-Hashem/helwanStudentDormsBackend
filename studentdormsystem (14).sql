@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 30, 2024 at 09:09 PM
+-- Generation Time: Apr 01, 2024 at 01:39 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -118,7 +118,13 @@ INSERT INTO `beds` (`id`, `number`, `roomId`, `isOccupied`, `occupant`) VALUES
 (85, 334, 48, 0, NULL),
 (86, 33, 53, 0, NULL),
 (87, 334, 53, 0, NULL),
-(88, 33, 54, 0, NULL);
+(88, 33, 54, 0, NULL),
+(89, 3453, 55, 0, NULL),
+(90, 33, 55, 0, NULL),
+(93, 6567, 45, 0, NULL),
+(94, 5567, 45, 0, NULL),
+(95, 7, 57, 0, NULL),
+(96, 778, 57, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -470,10 +476,10 @@ INSERT INTO `instructions` (`id`, `instruction`) VALUES
 (86, 'asdfasdfafsasefasasasaaaaaaaaaaaaa'),
 (88, 'asdasdfadfssdss'),
 (90, '11adadsa'),
-(93, 'aaasasasasasaaaaaaaaaaaaaaaaaaaaaaaaaaaadsadsa'),
-(94, 'sdasdadssdad'),
-(95, 'gfdfg'),
-(97, '12');
+(98, 'sdasdadsa'),
+(99, 'dasda'),
+(100, 'sdasdasdasd'),
+(101, 'dsasdasd');
 
 -- --------------------------------------------------------
 
@@ -1518,7 +1524,26 @@ INSERT INTO `logs` (`id`, `adminId`, `adminName`, `adminUsername`, `action`, `ob
 (85, 1, 'omar', 'omar1', '  اضافه تصريح من 2024-03-06 الى 2024-03-06 للسبب asdadfg', '1237789', 'omar22a', '2024-03-30 21:01:25'),
 (86, 1, 'omar', 'omar1', '  اضافه تصريح من 2024-03-14 الى 2024-03-07 للسبب sfds', '1237789', 'omar22a', '2024-03-30 21:02:18'),
 (87, 1, 'omar', 'omar1', '  اضافه تصريح من 2024-03-01 الى 2024-03-21 للسبب xddfgs', '1237789', 'omar22a', '2024-03-30 21:02:26'),
-(88, 1, 'omar', 'omar1', 'اضافه جزاء جديد للطالب omar22a و الرقم القومي 1237789', '1237789', 'omar22a', '2024-03-30 21:49:49');
+(88, 1, 'omar', 'omar1', 'اضافه جزاء جديد للطالب omar22a و الرقم القومي 1237789', '1237789', 'omar22a', '2024-03-30 21:49:49'),
+(89, 1, 'omar', 'omar1', 'اضافه غرفه جديده برقم \"345 \"', '55', '345', '2024-03-31 07:45:19'),
+(90, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"3453 \"', '89', '3453', '2024-03-31 07:45:21'),
+(91, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"33 \"', '90', '33', '2024-03-31 07:45:22'),
+(92, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"55 \"', '91', '55', '2024-03-31 07:45:23'),
+(93, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"657 \"', '92', '657', '2024-03-31 07:45:25'),
+(94, 1, 'omar', 'omar1', 'ازاله سرير \"92\"', '92', '92', '2024-03-31 07:45:27'),
+(95, 1, 'omar', 'omar1', 'ازاله سرير \"91\"', '91', '91', '2024-03-31 07:45:27'),
+(96, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"6567 \"', '93', '6567', '2024-03-31 07:45:33'),
+(97, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"5567 \"', '94', '5567', '2024-03-31 07:45:34'),
+(98, 1, 'omar', 'omar1', 'اضافه غرفه جديده برقم \"778 \"', '56', '778', '2024-03-31 07:46:02'),
+(99, 1, 'omar', 'omar1', 'ازاله غرفه \"56\"', '56', '56', '2024-03-31 07:46:04'),
+(100, 1, 'omar', 'omar1', 'اضافه غرفه جديده برقم \"778 \"', '57', '778', '2024-03-31 07:46:08'),
+(101, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"7 \"', '95', '7', '2024-03-31 07:46:12'),
+(102, 1, 'omar', 'omar1', 'اضافه سرير جديد برقم \"778 \"', '96', '778', '2024-03-31 07:46:13'),
+(103, 1, 'omar', 'omar1', 'بدأ تنسيق الطلاب', 'فارغ', 'فارغ', '2024-03-31 08:09:22'),
+(104, 1, 'omar', 'omar1', 'تم رفع صور الطلاب', 'فارغ', 'فارغ', '2024-04-01 13:03:10'),
+(105, 1, 'omar', 'omar1', 'تم رفع صور الطلاب', 'فارغ', 'فارغ', '2024-04-01 13:04:15'),
+(106, 1, 'omar', 'omar1', 'تم رفع صور الطلاب', 'فارغ', 'فارغ', '2024-04-01 13:13:18'),
+(107, 1, 'omar', 'omar1', 'تم رفع صور الطلاب', 'فارغ', 'فارغ', '2024-04-01 13:14:27');
 
 -- --------------------------------------------------------
 
@@ -1956,7 +1981,9 @@ INSERT INTO `rooms` (`id`, `number`, `type`, `floorId`) VALUES
 (48, 576, 'سكن مميز', 1),
 (51, 33, 'سكن عادي', 1),
 (53, 6576, 'سكن مميز', 1),
-(54, 23, 'سكن مميز', 9);
+(54, 23, 'سكن مميز', 9),
+(55, 345, 'سكن مميز', 21),
+(57, 778, 'سكن مميز', 21);
 
 -- --------------------------------------------------------
 
@@ -2032,24 +2059,26 @@ CREATE TABLE `students` (
   `isApproved` int(11) DEFAULT NULL,
   `isAccepted` int(11) DEFAULT NULL,
   `isHoused` int(11) DEFAULT NULL,
-  `serialNumber` int(11) NOT NULL
+  `serialNumber` int(11) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`id`, `nationalId`, `name`, `birthday`, `age`, `distance`, `dateOfApplying`, `placeOfBirth`, `image`, `gender`, `telephone`, `mobile`, `email`, `religion`, `faculty`, `fatherName`, `fatherNationalId`, `fatherOccupation`, `fatherNumber`, `guardianName`, `guardianNationalId`, `guardianRelationship`, `residence`, `addressDetails`, `isDisabled`, `familyAbroad`, `highschoolAbroad`, `highschoolSpecialization`, `academicYear`, `grade`, `accomodationType`, `accomodationWithNutrition`, `password`, `username`, `isNew`, `isApproved`, `isAccepted`, `isHoused`, `serialNumber`) VALUES
-(1, '1237789', 'omar22a', '2023-11-09', 21, 210, '2023-11-21', 'sdasdasd', '/helwanLogo1711548488043.jpg', 'M', 'asdasa', 'asdasda', 'sdadsasd@4343', 'مسلم', 'sdasda', 'sdasda', 'sfasfda', 'fgdghdhf', 'sdasda', 'fgdfgd', 'fgdg', 'sdadsa', 'sdasda', 'asdasda', 0, 1, 0, 'علمى علوم', 1, '20', 'سكن مميز', 0, '$2b$10$gXT/HtDIRTtnR4pu3QWmMe.ufbeXKX8J2AMvhfe0zGiMC6.ZqpYB2', '123', 0, 1, 1, 0, 8474375),
-(2, '1234', 'adel', '2023-09-19', 18, 540, '2023-11-21', 'gfdgfd', NULL, 'M', 'fghdfghd', 'fgdfgfgdfgd', 'hfgdghfdghfdz3gfdftgdfg@fsdtfgdgdfgg', 'مسيحى', 'fghdfghd', 'hfgdfghd', 'dfghdfghd', 'hgdfghdfhg', 'dfgsgfdsdfgs', 'hdhfdf', 'fdhfd', 'fghdhfgdhd', 'fgdghfdfghdhfgdfgh', 'fghdhgfzd', 0, 0, 1, 'أزهرى أدبى', 0, '200', 'سكن عادي', 0, '$2b$10$vp8IFqfumpwS/IWc1v9Yy.FbHN.VuXXG54M1Czz3i9l56nij6g.hW', '1234', 1, 1, 0, 0, 6153518),
-(3, '12345', 'testname', '2023-11-10', 19, 332, '2023-11-22', 'edrsfgdsdfgs', '/me1701095641268.png', 'M', 'dfsdfsdfgs', 'sdfsdfsdfgds', 'dfgsgdfs', 'مسيحى', 'dfgsgdfs', 'dfsdfsdfgs', 'dfgsdfgsdfgsdfg', 'dfgdfgsdfgs', 'dfsdfgsdfgsdfg', 'dfsdfgsdfgs', 'dfsdfsdfs', 'dfsdfgsdfg', 'dfgsgdfs', 'dfgsdgfsgf', 0, 1, 1, 'علمى رياضة', 1, '45', 'سكن عادي', 0, '$2b$10$kdtZ6hG9Tzc3mdT3qgAqbeLIAiT9hWeFDoLVdjqHbEonfqjIbvvBy', '12345', 0, 1, 1, 1, 8981227),
-(4, '1234566', 'dfgfgdfg', '2023-11-14', 20, 1001, '2023-11-26', 'dfsgdfsdfgs', NULL, 'F', 'dfgsdfgsgdfs', 'sgfsgdfsgfds', 'sdfgssdfgsgdfsgfds', 'مسلم', 'sgfdsgfds', 'fgdsgfdsgfd', 'sdfgsgdfsgdfs', 'dfgsdfgs', 'sdfgsdfgsdfg', 'dfgsgdfs', 'dfgsgdfs', 'dfgsdfgs', 'gfdgfdfg', 'fgdsfghd', 1, 1, 0, 'أزهرى علمى', 3, '20', 'سكن عادي', 1, '$2b$10$dPEAevq4eymdsyNTNOuTN.mzSy2PSadsK.Ae7FJcq//SolI0WRgsS', '1234566', 0, 1, 0, 0, 6320101),
-(5, '111', 'gesdgsgdfsddf', '2024-01-17', 25, 1000, '2024-1-6', 'dgsgfdsdgf', NULL, 'M', '35435434', '56465445', 'sffd@sfdgsfgd', 'مسلم', 'sesesesesafdasdf', 'sdasdfasdfa', '42342342', 'asdafdsadfs', '54654', 'sdafdsasdfa', '342432342', 'asfdsasdfa', 'asasa', 'yuuytgjhg8-ghfhgfghg', 0, 0, 0, 'أدبى', 0, '333', 'سكن عادي', 0, '$2b$10$L2tFFr8z1xpgFdIADtsEYuU.Qfsg3dNMu7rSgNULp8W6qTfK0aVFu', '111', 1, 1, 1, 1, 6048666),
-(6, '112222', 'ersfdgsdfgs', '2002-03-21', 19, 20, '2024-1-6', 'fasdfasdfa', NULL, 'F', 'sfdsdfsdfs', 'sdfasda', 'dfgsfd@fsdfsdf', 'مسلم', 'dfsdfsdfs', 'sddfgsgdfsdfg', 'dfgsdfgsdfgsdf', 'dfgsdfgsdfgs', 'sdfasdfasdfa', 'sdfgsdfgs', 'dfgsgdfsdfg', 'sdaasdfasdf', 'dfgsdfgsdfgs', 'dsdfgsdfgsdfg', 1, 0, 1, 'أزهرى علمى', 0, '3.7', 'سكن عادي', 0, '$2b$10$Txdra3FdagBe3RMOkdvkVeu7NLDpN3TAjh0cmWcEhe2NH/qES6MKq', '112222', 1, 0, 0, 0, 5952218),
-(7, '435434535', 'fdsdfsdfs', '2003-03-21', 33, 110, '2024-1-6', 'dfsdfsdfsf', NULL, 'M', 'dfsfdsdfs', 'sdfasdfafs', 'dfsdfsdf@fdsdfsdf', 'مسيحى', 'fdsdfsdfs', 'dfsdfsdfs', 'dfsdfsdfs', 'dfsdfgsgdfs', 'sfafsdasdf', 'gdsdfgsdfg', 'dfsdfsdfs', 'fsaasdfasdf', 'dfsdfsfdsfd', 'dfsdfsf', 1, 0, 0, 'أدبى', 0, '456', 'سكن عادي', 1, '$2b$10$yzcfZlrkH2r5hRDgvKGSRO/WMXbkpbgpeULvt.iCNmEhsVWvj/bse', '435434535', 1, 1, 1, 1, 1002400),
-(8, '111231453543', 'fsdfsfd', '1996-05-07', 27, 11.1611, '2024-1-6', 'wdasdads', NULL, 'F', 'sdasdasda', 'asdasd', 'dsasdasdasd@ffgfd', 'مسلم', 'الهندسة بالمطرية', 'sdasdasdas', 'adsasda', 'sdasdasdasd', 'dsasda', 'asdasdasd', 'asdasdaasd', 'sdasda', 'sasdasda', 'sasasda', 0, 1, 0, 'معاهد فنية ثلاث سنوات', 4, '45', 'سكن عادي', 0, '$2b$10$cCc7BCQy2zIyQJ.ltqymJetohWzYpngkYtyGuckTuNTmuE.jYLhy2', '111231453543', 0, 1, 1, 1, 5573578),
-(9, '444444', 'esfgdsdgfs', '1990-01-09', 34, 13.4478, '2024-1-9', 'dsdfgsdfgs', NULL, 'M', 'dfsdfgsdfgsfd', 'dfgsdfgsdfgs', 'sdfgsdfgsdfgs', 'مسلم', 'dfgsdfgsdfgsg', 'dfgsfgsgds', '2353543543', 'gdsdgfsgdfs', 'dsfdgsdfgs', 'sfdsgsdfgsg', '34353453', 'dsdfgsdgfsdfg', 'fddfsdfgsg', 'dfsgddfsgdfsdfg', 0, 1, 0, 'أزهرى علمى', 4, '2.76', 'سكن عادي', 1, '$2b$10$.IPUPFmBDpm7ib0eSZkVROQWy3UngcPZX8nUBKBR727MuwlHQqTyi', '444444', 0, -1, 0, 0, 5675854),
-(10, 'asdfasdfa', 'sdfasdfasdfasf', '2024-02-22', -1, 12.8767, '2024-2-13', 'sdfadfsasd', NULL, 'F', 'sdafdsasdfa', 'asdfasfda', 'asdfafds', 'مسلم', 'sdfasdfa', 'fdsasdfa', 'dasdfafsda', 'sdasdfa', 'sdfasdfaf', 'sdfadfsasdf', 'saassdfasfd', 'sdafsdasfeda', 'saasasdf', 'sdsdasdasdf', 1, 1, 1, 'معاهد فنية ثلاث سنوات', 2, '45', 'سكن عادي', 1, '$2b$10$B.XXdgAX9f5Hb29irOub/eUjqVCxsJfMIazgj3BfYEIR6aZhreC2W', 'asdfasdfa', 1, -1, 0, 0, 3316745);
+INSERT INTO `students` (`id`, `nationalId`, `name`, `birthday`, `age`, `distance`, `dateOfApplying`, `placeOfBirth`, `image`, `gender`, `telephone`, `mobile`, `email`, `religion`, `faculty`, `fatherName`, `fatherNationalId`, `fatherOccupation`, `fatherNumber`, `guardianName`, `guardianNationalId`, `guardianRelationship`, `residence`, `addressDetails`, `isDisabled`, `familyAbroad`, `highschoolAbroad`, `highschoolSpecialization`, `academicYear`, `grade`, `accomodationType`, `accomodationWithNutrition`, `password`, `username`, `isNew`, `isApproved`, `isAccepted`, `isHoused`, `serialNumber`, `timestamp`) VALUES
+(1, '1237789', 'omar22a', '2023-11-09', 21, 210, '2023-11-21', 'sdasdasd', '/12377891711970067416.jpg', 'M', 'asdasa', 'asdasda', 'sdadsasd@4343', 'مسلم', 'sdasda', 'sdasda', 'sfasfda', 'fgdghdhf', 'sdasda', 'fgdfgd', 'fgdg', 'sdadsa', 'sdasda', 'asdasda', 0, 1, 0, 'علمى علوم', 1, '20', 'سكن مميز', 0, '$2b$10$gXT/HtDIRTtnR4pu3QWmMe.ufbeXKX8J2AMvhfe0zGiMC6.ZqpYB2', '123', 0, 1, 1, 0, 8474375, '2024-04-01 09:37:40'),
+(2, '1234', 'adel', '2023-09-19', 18, 540, '2023-11-21', 'gfdgfd', '/12341711970067409.png', 'M', 'fghdfghd', 'fgdfgfgdfgd', 'hfgdghfdghfdz3gfdftgdfg@fsdtfgdgdfgg', 'مسيحى', 'fghdfghd', 'hfgdfghd', 'dfghdfghd', 'hgdfghdfhg', 'dfgsgfdsdfgs', 'hdhfdf', 'fdhfd', 'fghdhfgdhd', 'fgdghfdfghdhfgdfgh', 'fghdhgfzd', 0, 0, 1, 'أزهرى أدبى', 0, '200', 'سكن عادي', 0, '$2b$10$vp8IFqfumpwS/IWc1v9Yy.FbHN.VuXXG54M1Czz3i9l56nij6g.hW', '1234', 1, 1, 1, 0, 6153518, '2024-04-01 09:37:40'),
+(3, '12345', 'testname', '2023-11-10', 19, 332, '2023-11-22', 'edrsfgdsdfgs', '/123451711970067412.jpg', 'M', 'dfsdfsdfgs', 'sdfsdfsdfgds', 'dfgsgdfs', 'مسيحى', 'dfgsgdfs', 'dfsdfsdfgs', 'dfgsdfgsdfgsdfg', 'dfgdfgsdfgs', 'dfsdfgsdfgsdfg', 'dfsdfgsdfgs', 'dfsdfsdfs', 'dfsdfgsdfg', 'dfgsgdfs', 'dfgsdgfsgf', 0, 1, 1, 'علمى رياضة', 1, '45', 'سكن عادي', 0, '$2b$10$kdtZ6hG9Tzc3mdT3qgAqbeLIAiT9hWeFDoLVdjqHbEonfqjIbvvBy', '12345', 0, 1, 1, 1, 8981227, '2024-04-01 09:37:40'),
+(4, '1234566', 'dfgfgdfg', '2023-11-14', 20, 1001, '2023-11-26', 'dfsgdfsdfgs', NULL, 'F', 'dfgsdfgsgdfs', 'sgfsgdfsgfds', 'sdfgssdfgsgdfsgfds', 'مسلم', 'sgfdsgfds', 'fgdsgfdsgfd', 'sdfgsgdfsgdfs', 'dfgsdfgs', 'sdfgsdfgsdfg', 'dfgsgdfs', 'dfgsgdfs', 'dfgsdfgs', 'gfdgfdfg', 'fgdsfghd', 1, 1, 0, 'أزهرى علمى', 3, '20', 'سكن عادي', 1, '$2b$10$dPEAevq4eymdsyNTNOuTN.mzSy2PSadsK.Ae7FJcq//SolI0WRgsS', '1234566', 0, 1, 1, 0, 6320101, '2024-04-01 09:37:40'),
+(5, '111', 'gesdgsgdfsddf', '2024-01-17', 25, 1000, '2024-1-6', 'dgsgfdsdgf', NULL, 'M', '35435434', '56465445', 'sffd@sfdgsfgd', 'مسلم', 'sesesesesafdasdf', 'sdasdfasdfa', '42342342', 'asdafdsadfs', '54654', 'sdafdsasdfa', '342432342', 'asfdsasdfa', 'asasa', 'yuuytgjhg8-ghfhgfghg', 0, 0, 0, 'أدبى', 0, '333', 'سكن عادي', 0, '$2b$10$L2tFFr8z1xpgFdIADtsEYuU.Qfsg3dNMu7rSgNULp8W6qTfK0aVFu', '111', 1, 1, 1, 1, 6048666, '2024-04-01 09:37:40'),
+(6, '112222', 'ersfdgsdfgs', '2002-03-21', 19, 20, '2024-1-6', 'fasdfasdfa', NULL, 'F', 'sfdsdfsdfs', 'sdfasda', 'dfgsfd@fsdfsdf', 'مسلم', 'dfsdfsdfs', 'sddfgsgdfsdfg', 'dfgsdfgsdfgsdf', 'dfgsdfgsdfgs', 'sdfasdfasdfa', 'sdfgsdfgs', 'dfgsgdfsdfg', 'sdaasdfasdf', 'dfgsdfgsdfgs', 'dsdfgsdfgsdfg', 1, 0, 1, 'أزهرى علمى', 0, '3.7', 'سكن عادي', 0, '$2b$10$Txdra3FdagBe3RMOkdvkVeu7NLDpN3TAjh0cmWcEhe2NH/qES6MKq', '112222', 1, 0, 0, 0, 5952218, '2024-04-01 09:37:40'),
+(7, '435434535', 'fdsdfsdfs', '2003-03-21', 33, 110, '2024-1-6', 'dfsdfsdfsf', NULL, 'M', 'dfsfdsdfs', 'sdfasdfafs', 'dfsdfsdf@fdsdfsdf', 'مسيحى', 'fdsdfsdfs', 'dfsdfsdfs', 'dfsdfsdfs', 'dfsdfgsgdfs', 'sfafsdasdf', 'gdsdfgsdfg', 'dfsdfsdfs', 'fsaasdfasdf', 'dfsdfsfdsfd', 'dfsdfsf', 1, 0, 0, 'أدبى', 0, '456', 'سكن عادي', 1, '$2b$10$yzcfZlrkH2r5hRDgvKGSRO/WMXbkpbgpeULvt.iCNmEhsVWvj/bse', '435434535', 1, 1, 1, 1, 1002400, '2024-04-01 09:37:40'),
+(8, '111231453543', 'fsdfsfd', '1996-05-07', 27, 11.1611, '2024-1-6', 'wdasdads', NULL, 'F', 'sdasdasda', 'asdasd', 'dsasdasdasd@ffgfd', 'مسلم', 'الهندسة بالمطرية', 'sdasdasdas', 'adsasda', 'sdasdasdasd', 'dsasda', 'asdasdasd', 'asdasdaasd', 'sdasda', 'sasdasda', 'sasasda', 0, 1, 0, 'معاهد فنية ثلاث سنوات', 4, '45', 'سكن عادي', 0, '$2b$10$cCc7BCQy2zIyQJ.ltqymJetohWzYpngkYtyGuckTuNTmuE.jYLhy2', '111231453543', 0, 1, 1, 1, 5573578, '2024-04-01 09:37:40'),
+(9, '444444', 'esfgdsdgfs', '1990-01-09', 34, 13.4478, '2024-1-9', 'dsdfgsdfgs', NULL, 'M', 'dfsdfgsdfgsfd', 'dfgsdfgsdfgs', 'sdfgsdfgsdfgs', 'مسلم', 'dfgsdfgsdfgsg', 'dfgsfgsgds', '2353543543', 'gdsdgfsgdfs', 'dsfdgsdfgs', 'sfdsgsdfgsg', '34353453', 'dsdfgsdgfsdfg', 'fddfsdfgsg', 'dfsgddfsgdfsdfg', 0, 1, 0, 'أزهرى علمى', 4, '2.76', 'سكن عادي', 1, '$2b$10$.IPUPFmBDpm7ib0eSZkVROQWy3UngcPZX8nUBKBR727MuwlHQqTyi', '444444', 0, -1, 0, 0, 5675854, '2024-04-01 09:37:40'),
+(10, 'asdfasdfa', 'sdfasdfasdfasf', '2024-02-22', -1, 12.8767, '2024-2-13', 'sdfadfsasd', NULL, 'F', 'sdafdsasdfa', 'asdfasfda', 'asdfafds', 'مسلم', 'sdfasdfa', 'fdsasdfa', 'dasdfafsda', 'sdasdfa', 'sdfasdfaf', 'sdfadfsasdf', 'saassdfasfd', 'sdafsdasfeda', 'saasasdf', 'sdsdasdasdf', 1, 1, 1, 'معاهد فنية ثلاث سنوات', 2, '45', 'سكن عادي', 1, '$2b$10$B.XXdgAX9f5Hb29irOub/eUjqVCxsJfMIazgj3BfYEIR6aZhreC2W', 'asdfasdfa', 1, -1, 0, 0, 3316745, '2024-04-01 09:37:40'),
+(11, '111111', 'dfgghfhgf', '2024-04-25', -1, 11.2124, '2024-4-1', 'sdasdasda', NULL, 'F', 'sasdasdasd', 'sadsasda', 'dssdasda@adsasda', 'مسيحى', 'الطب', 'dsadsasda', 'asdasda', 'sdasdasda', 'sdasdasda', 'sdasdasda', 'asdasdasd', 'sdasdasd', 'sadsasda', 'sdasdasd', 1, 0, 1, 'معاهد فنية اربعه سنوات', 3, '4.7', 'سكن مميز', 0, '$2b$10$J4IlFj36P/Bc2UgPWNS/Ku5ayPICDWZTHZ1ZmV73s4vWL09zclU4q', '111111', 0, 0, 0, 0, 2955299, '2024-04-01 09:58:06');
 
 -- --------------------------------------------------------
 
@@ -2231,7 +2260,7 @@ ALTER TABLE `applicationdates`
 -- AUTO_INCREMENT for table `beds`
 --
 ALTER TABLE `beds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `blockmeals`
@@ -2285,7 +2314,7 @@ ALTER TABLE `floors`
 -- AUTO_INCREMENT for table `instructions`
 --
 ALTER TABLE `instructions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `levels`
@@ -2297,7 +2326,7 @@ ALTER TABLE `levels`
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT for table `penalties`
@@ -2321,7 +2350,7 @@ ALTER TABLE `recievedmeals`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `studentfees`
@@ -2333,7 +2362,7 @@ ALTER TABLE `studentfees`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `towns`

@@ -508,6 +508,42 @@ async function deleteImage(req, res) {
   }
 }
 
+//----------------------------------------------------------------
+
+async function massImageUpload(req, res) {
+  try {
+    const image = req.file;
+
+    if (!image) {
+      return res.status(400).json({ message: "Please provide all the fields" });
+    }
+
+    const imagePath = `/${image.filename}`;
+    const originalName = image.originalname.split(".")[0];
+
+    const present = await conn.awaitQuery(
+      "SELECT * FROM students WHERE nationalId = ?",
+      [originalName]
+    );
+
+    if (present.length > 0) {
+      await conn.awaitQuery(
+        "UPDATE students SET image = ?  WHERE nationalId = ?;",
+        [imagePath, originalName]
+      );
+    }
+    return res
+      .status(201)
+      .json({ message: "student Updated", filePath: imagePath });
+  } catch (error) {
+    console.error(error);
+    console.log(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 async function assessStudents(req, res) {
   try {
     const numberOFStudentsToBeAccepted = 6;
@@ -736,5 +772,6 @@ student.put("/delete-image", deleteImage);
 student.put("/", update);
 student.put("/assess-students", assessStudents);
 student.put("/suspend/:id", suspend);
+student.post("/mass-image-upload", upload.single("image"), massImageUpload);
 
 export default student;
