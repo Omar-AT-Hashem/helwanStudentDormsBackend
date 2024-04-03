@@ -7,6 +7,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authenticateToken from "../../../middleware/authenticateToken.js";
 
+import fs from "fs";
+var obj = JSON.parse(fs.readFileSync("./colleges.json", "utf8"));
+
 dotenv.config();
 
 const universityStructure = Router();
@@ -23,7 +26,15 @@ async function getFaculties(req, res) {
   }
 }
 
+async function getStructure(req, res) {
+  try {
+    return res.status(200).json(obj);
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
 
 universityStructure.get("/get-faculties", getFaculties);
+universityStructure.get("/get-structure", getStructure);
 
 export default universityStructure;
