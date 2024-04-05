@@ -90,11 +90,79 @@ async function create(req, res) {
 //     res.status(500).json({ message: "Server Error" });
 //   }
 // }
-// //----------------------------------------------------------------
+//----------------------------------------------------------------
 
+async function getStudentsPenalties(req, res) {
+  try {
+    const { fromDate, toDate, gender, faculty } = req.body;
+
+    if (!fromDate || !toDate || !gender || !faculty) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
+
+    const data = await conn.awaitQuery(
+      "SELECT * FROM penalties INNER JOIN students on students.id = penalties.studentId WHERE faculty = ? AND gender = ? AND date BETWEEN ? AND ? ORDER BY studentId ASC, date ASC;",
+      [faculty, gender, fromDate, toDate]
+    );
+
+    let augmentedData = [];
+
+    let currentStudent = {
+      ...data[0],
+      penalties: [],
+    };
+
+    data.forEach((student, index) => {
+      if (
+        student.studentId == currentStudent.studentId &&
+        index != data.length - 1
+      ) {
+        currentStudent.penalties.push({
+          reason: student.reason,
+          date: student.date,
+        });
+      } else {
+        if (
+          student.studentId == currentStudent.studentId &&
+          index == data.length - 1
+        ) {
+          currentStudent.penalties.push({
+            reason: student.reason,
+            date: student.date,
+          });
+          augmentedData.push(currentStudent);
+          currentStudent = {
+            ...student,
+            penalties: [],
+          };
+        } else {
+          augmentedData.push(currentStudent);
+          currentStudent = {
+            ...student,
+            penalties: [],
+          };
+          currentStudent.penalties.push({
+            reason: student.reason,
+            date: student.date,
+          });
+        }
+      }
+    });
+
+    res.status(201).json(augmentedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
 penalty.get("/", index);
 penalty.get("/get-by-studentId/:studentId", getByStudentId);
 penalty.post("/", create);
+penalty.post("/student-penalties", getStudentsPenalties);
 // penalty.delete("/:id", deleteById);
 // penalty.put("/", update);
 
