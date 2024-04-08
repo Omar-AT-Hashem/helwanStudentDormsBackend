@@ -709,7 +709,6 @@ async function approveOrReject(req, res) {
 
 async function suspend(req, res) {
   const id = req.params.id;
-  console.log(id);
   try {
     await conn.awaitQuery(
       "UPDATE students SET isHoused = ?, isAccepted = ?, isApproved = ? WHERE id = ?;",
@@ -730,6 +729,39 @@ async function suspend(req, res) {
 
 //----------------------------------------------------------------
 
+async function getStudentsWithoutPictures(req, res) {
+  const { gender } = req.body;
+  try {
+    const data = await conn.awaitQuery(
+      "SELECT id, name, nationalId, academicYear FROM students WHERE image IS NULL AND gender = ?",
+      [gender]
+    );
+
+    return res.status(201).json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
+async function getSuspendedStudents(req, res) {
+  const { gender } = req.body;
+  try {
+    const data = await conn.awaitQuery(
+      "SELECT id, name, nationalId, academicYear FROM students WHERE isHoused = ? AND isAccepted = ? AND isApproved = ? AND gender = ?",
+      [-1, 0, -1, gender]
+    );
+
+    return res.status(201).json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
 async function meta(req, res) {
   try {
     const applicantFemales = await conn.awaitQuery(
@@ -764,6 +796,8 @@ student.get("/get-by-gender/:gender", getByGender);
 student.get("/column/:column/:value/:descriminator/:options", indexColumn);
 student.get("/get-by-id/:studentId", getStudentById);
 student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
+student.post("/get-students-without-pictures", getStudentsWithoutPictures);
+student.post("/get-suspended-students", getSuspendedStudents);
 student.post("/login", login);
 student.post("/register", register);
 student.post("/approve-or-reject/:approveORreject", approveOrReject);

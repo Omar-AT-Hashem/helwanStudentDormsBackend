@@ -56,48 +56,83 @@ async function create(req, res) {
 
 //----------------------------------------------------------------
 
-// async function update(req, res) {
-//   try {
-//     const { id, name, governorate } = req.body;
+async function getStudentsFees(req, res) {
+  try {
+    const { fromDate, toDate, gender, faculty } = req.body;
 
-//     if (!governorate || !name || !id) {
-//       return res
-//         .status(400)
-//         .json({ message: "Please provide all the required fields" });
-//     }
+    if (!fromDate || !toDate || !gender || !faculty) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
 
-//     await conn.awaitQuery(
-//       "UPDATE categories SET name = ?, governorate = ? WHERE id = ?",
-//       [name, governorate, id]
-//     );
+    const data = await conn.awaitQuery(
+      "SELECT * FROM studentFees INNER JOIN students on students.id = studentfees.studentId WHERE faculty = ? AND gender = ? AND date BETWEEN ? AND ? ORDER BY studentId ASC, date ASC;",
+      [faculty, gender, fromDate, toDate]
+    );
 
-//     res.status(201).json({ message: "instruction Updated" });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// }
+    let augmentedData = [];
 
-// //----------------------------------------------------------------
+    let currentStudent = {
+      ...data[0],
+      fees: [],
+    };
 
-// async function deleteById(req, res) {
-//   const id = req.params.id;
-//   try {
-//     await conn.awaitQuery("DELETE FROM categories WHERE id = ?", [id]);
-//     return res.status(200).json({
-//       message: `date with Id = ${instructionId} was deleted successfully`,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// }
-// //----------------------------------------------------------------
+    data.forEach((student, index) => {
+      if (
+        student.studentId == currentStudent.studentId &&
+        index != data.length - 1
+      ) {
+        currentStudent.fees.push({
+          type: student.type,
+          isPayed: student.isPayed,
+          sum: student.sum,
+          date: student.date,
+        });
+      } else {
+        if (
+          student.studentId == currentStudent.studentId &&
+          index == data.length - 1
+        ) {
+          currentStudent.fees.push({
+            type: student.type,
+            isPayed: student.isPayed,
+            sum: student.sum,
+            date: student.date,
+          });
+          augmentedData.push(currentStudent);
+          currentStudent = {
+            ...student,
+            fees: [],
+          };
+        } else {
+          augmentedData.push(currentStudent);
+          currentStudent = {
+            ...student,
+            fees: [],
+          };
+          currentStudent.fees.push({
+            type: student.type,
+            isPayed: student.isPayed,
+            sum: student.sum,
+            date: student.date,
+          });
+        }
+      }
+    });
+
+    res.status(201).json(augmentedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
 
 studentfee.get("/", index);
 studentfee.get("/get-by-studentId/:studentId", getByStudentId);
 studentfee.post("/", create);
-// studentfees.delete("/:id", deleteById);
-// studentfees.put("/", update);
+studentfee.post("/student-fees", getStudentsFees);
 
 export default studentfee;
-
