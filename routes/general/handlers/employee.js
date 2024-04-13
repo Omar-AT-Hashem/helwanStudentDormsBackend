@@ -22,22 +22,48 @@ async function register(req, res) {
       username,
       name,
       password,
-      creating,
-      deleting,
-      updating,
-      reading,
-      creatingEmployee,
+      superAdmin,
+      editStudentData,
+      applicationApprovals,
+      houseStudents,
+      unHouseStudents,
+      managePenalties,
+      suspendStudent,
+      manageAbscence,
+      manageStudentFees,
+      manageBlockMeals,
+      uploadStudentImages,
+      editApplicationDates,
+      editInstructions,
+      uploadMeals,
+      editFees,
+      editHousingResources,
+      studentEvaluation,
+      systemWash,
     } = req.body;
 
     if (
       !username ||
       !password ||
       !name ||
-      creating === undefined ||
-      deleting === undefined ||
-      updating === undefined ||
-      reading === undefined ||
-      creatingEmployee === undefined
+      superAdmin === undefined ||
+      editStudentData === undefined ||
+      applicationApprovals === undefined ||
+      houseStudents === undefined ||
+      unHouseStudents === undefined ||
+      managePenalties === undefined ||
+      suspendStudent === undefined ||
+      manageAbscence === undefined ||
+      manageStudentFees === undefined ||
+      manageBlockMeals === undefined ||
+      uploadStudentImages === undefined ||
+      editApplicationDates === undefined ||
+      editInstructions === undefined ||
+      uploadMeals === undefined ||
+      editFees === undefined ||
+      editHousingResources === undefined ||
+      studentEvaluation === undefined ||
+      systemWash === undefined
     ) {
       return res
         .status(400)
@@ -58,16 +84,29 @@ async function register(req, res) {
 
     // Create a new user
     const newEmployee = await conn.awaitQuery(
-      "INSERT INTO employees (username, name, password, creating, updating, deleting, reading, creatingEmployee) VALUES (?,?,?,?,?,?,?,?)",
+      "INSERT INTO employees (username, name, password, superAdmin, editStudentData, applicationApprovals,  houseStudents, unHouseStudents, managePenalties, suspendStudent, manageAbscence, manageStudentFees, manageBlockMeals, uploadStudentImages, editApplicationDates, editInstructions, uploadMeals, editFees,  editHousingResources,  studentEvaluation,  systemWash) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         username,
         name,
         hashedPassword,
-        creating,
-        updating,
-        deleting,
-        reading,
-        creatingEmployee,
+        superAdmin,
+        editStudentData,
+        applicationApprovals,
+        houseStudents,
+        unHouseStudents,
+        managePenalties,
+        suspendStudent,
+        manageAbscence,
+        manageStudentFees,
+        manageBlockMeals,
+        uploadStudentImages,
+        editApplicationDates,
+        editInstructions,
+        uploadMeals,
+        editFees,
+        editHousingResources,
+        studentEvaluation,
+        systemWash,
       ]
     );
 
@@ -131,7 +170,7 @@ async function getPermissions(req, res) {
   try {
     const id = req.params.id;
     const permissions = await conn.awaitQuery(
-      "SELECT creating, updating, deleting, reading, creatingEmployee FROM employees WHERE id = ?",
+      "SELECT superAdmin, editStudentData, applicationApprovals, houseStudents, unHouseStudents, managePenalties,   suspendStudent, manageAbscence, manageStudentFees, manageBlockMeals, uploadStudentImages, editApplicationDates, editInstructions, uploadMeals, editFees, editHousingResources, studentEvaluation, systemWash FROM employees WHERE id = ?",
       [id]
     );
     if (permissions.length > 0) {
