@@ -16,6 +16,18 @@ const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 //----------------------------------------------------------------
 
+async function index(req, res) {
+  try {
+    const employees = await conn.awaitQuery("SELECT * FROM employees");
+    return res.status(200).json(employees);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 async function register(req, res) {
   try {
     const {
@@ -183,8 +195,107 @@ async function getPermissions(req, res) {
   }
 }
 
+//----------------------------------------------------------------
+
+async function update(req, res) {
+  try {
+    const {
+      id,
+      username,
+      name,
+      password,
+      superAdmin,
+      editStudentData,
+      applicationApprovals,
+      houseStudents,
+      unHouseStudents,
+      managePenalties,
+      suspendStudent,
+      manageAbscence,
+      manageStudentFees,
+      manageBlockMeals,
+      uploadStudentImages,
+      editApplicationDates,
+      editInstructions,
+      uploadMeals,
+      editFees,
+      editHousingResources,
+      studentEvaluation,
+      systemWash,
+    } = req.body;
+
+    if (
+      !id ||
+      !username ||
+      !password ||
+      !name ||
+      superAdmin === undefined ||
+      editStudentData === undefined ||
+      applicationApprovals === undefined ||
+      houseStudents === undefined ||
+      unHouseStudents === undefined ||
+      managePenalties === undefined ||
+      suspendStudent === undefined ||
+      manageAbscence === undefined ||
+      manageStudentFees === undefined ||
+      manageBlockMeals === undefined ||
+      uploadStudentImages === undefined ||
+      editApplicationDates === undefined ||
+      editInstructions === undefined ||
+      uploadMeals === undefined ||
+      editFees === undefined ||
+      editHousingResources === undefined ||
+      studentEvaluation === undefined ||
+      systemWash === undefined
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
+
+    // Check if the user already exists
+
+    // Create a new user
+    const newEmployee = await conn.awaitQuery(
+      "UPDATE employees SET superAdmin = ?, editStudentData = ?, applicationApprovals = ?,  houseStudents = ?, unHouseStudents = ?, managePenalties = ?, suspendStudent = ?, manageAbscence = ?, manageStudentFees = ?, manageBlockMeals = ?, uploadStudentImages = ?, editApplicationDates = ?, editInstructions = ?, uploadMeals = ?, editFees = ?,  editHousingResources = ?,  studentEvaluation = ?,  systemWash = ? WHERE id = ?",
+      [  
+        superAdmin,
+        editStudentData,
+        applicationApprovals,
+        houseStudents,
+        unHouseStudents,
+        managePenalties,
+        suspendStudent,
+        manageAbscence,
+        manageStudentFees,
+        manageBlockMeals,
+        uploadStudentImages,
+        editApplicationDates,
+        editInstructions,
+        uploadMeals,
+        editFees,
+        editHousingResources,
+        studentEvaluation,
+        systemWash,
+        id
+      ]
+    );
+
+    // Create a JWT token
+
+    res.status(201).json({ message: "User updated", id: newEmployee.insertId });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
+employee.get('/', index)
+employee.get("/permissions/:id", getPermissions);
 employee.post("/login", login);
 employee.post("/register", register);
-employee.get("/permissions/:id", getPermissions);
+employee.put("/", update);
 
 export default employee;
