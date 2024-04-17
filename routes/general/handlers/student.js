@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { distance } from "@turf/turf";
 import calculateAge from "../../../helpers/claculateAge.js";
-import authenticateToken from "../../../middleware/authenticateToken.js";
+
 
 import path from "path";
 import { fileURLToPath } from "url";

@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const tokenSecret = process.env.TOKEN_SECRET;
+const tokenSecret = process.env.TOKEN_SECRET_LEVELONE;
 
-function authenticateToken(req, res, next) {
+function authenticateTokenLevelOne(req, res, next) {
   if (req.header("Authorization")) {
     const token = req.header("Authorization").split(" ")[1];
     if (!token || token == "") {
@@ -29,4 +29,4 @@ function authenticateToken(req, res, next) {
   }
 }
 
-export default authenticateToken;
+export default authenticateTokenLevelOne;

@@ -5,7 +5,7 @@ import conn from "../../../config/db.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import authenticateToken from "../../../middleware/authenticateToken.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
 
 dotenv.config();
 
@@ -258,7 +258,7 @@ async function update(req, res) {
     // Create a new user
     const newEmployee = await conn.awaitQuery(
       "UPDATE employees SET superAdmin = ?, editStudentData = ?, applicationApprovals = ?,  houseStudents = ?, unHouseStudents = ?, managePenalties = ?, suspendStudent = ?, manageAbscence = ?, manageStudentFees = ?, manageBlockMeals = ?, uploadStudentImages = ?, editApplicationDates = ?, editInstructions = ?, uploadMeals = ?, editFees = ?,  editHousingResources = ?,  studentEvaluation = ?,  systemWash = ? WHERE id = ?",
-      [  
+      [
         superAdmin,
         editStudentData,
         applicationApprovals,
@@ -277,7 +277,7 @@ async function update(req, res) {
         editHousingResources,
         studentEvaluation,
         systemWash,
-        id
+        id,
       ]
     );
 
@@ -292,10 +292,19 @@ async function update(req, res) {
 
 //----------------------------------------------------------------
 
-employee.get('/', index)
+async function verifyTokenPageLoad(req, res) {
+  res.status(200).json({ message: "Token Verified" });
+}
+
+employee.get("/", index);
 employee.get("/permissions/:id", getPermissions);
 employee.post("/login", login);
 employee.post("/register", register);
 employee.put("/", update);
+employee.post(
+  "/verify-token-page-load",
+  authenticateTokenLevelTwo,
+  verifyTokenPageLoad
+);
 
 export default employee;

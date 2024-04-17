@@ -5,7 +5,7 @@ import conn from "../../../config/db.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import authenticateToken from "../../../middleware/authenticateToken.js";
+
 
 import fs from "fs";
 var obj = JSON.parse(fs.readFileSync("./colleges.json", "utf8"));

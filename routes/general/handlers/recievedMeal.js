@@ -7,7 +7,7 @@ import multer from "multer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import XLSX from "xlsx";
-import authenticateToken from "../../../middleware/authenticateToken.js";
+
 
 dotenv.config();
 

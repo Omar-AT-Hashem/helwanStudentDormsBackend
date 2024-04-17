@@ -1,6 +1,6 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
-import authenticateToken from "../../../middleware/authenticateToken.js";
+
 
 const instructions = Router();
 
