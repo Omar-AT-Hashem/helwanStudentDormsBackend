@@ -1,5 +1,7 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import manageStudentFeesPerm from "../../../middleware/perms/manageStudentFeesPerm.js";
 
 const studentfee = Router();
 
@@ -130,9 +132,18 @@ async function getStudentsFees(req, res) {
 
 //----------------------------------------------------------------
 
-studentfee.get("/", index);
-studentfee.get("/get-by-studentId/:studentId", getByStudentId);
-studentfee.post("/", create);
-studentfee.post("/student-fees", getStudentsFees);
+studentfee.get("/", authenticateTokenLevelTwo, index);
+studentfee.get(
+  "/get-by-studentId/:studentId",
+  authenticateTokenLevelTwo,
+  getByStudentId
+);
+studentfee.post("/", authenticateTokenLevelTwo, manageStudentFeesPerm, create);
+studentfee.post(
+  "/student-fees",
+  authenticateTokenLevelTwo,
+  manageStudentFeesPerm,
+  getStudentsFees
+);
 
 export default studentfee;

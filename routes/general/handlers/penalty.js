@@ -1,5 +1,7 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import managePenaltiesPerm from "../../../middleware/perms/managePenaltiesPerm.js";
 
 const penalty = Router();
 
@@ -52,7 +54,6 @@ async function create(req, res) {
     res.status(500).json({ message: "Server Error" });
   }
 }
-
 
 async function getStudentsPenalties(req, res) {
   try {
@@ -121,10 +122,19 @@ async function getStudentsPenalties(req, res) {
 }
 
 //----------------------------------------------------------------
-penalty.get("/", index);
-penalty.get("/get-by-studentId/:studentId", getByStudentId);
-penalty.post("/", create);
-penalty.post("/student-penalties", getStudentsPenalties);
+penalty.get("/", authenticateTokenLevelTwo, index);
+penalty.get(
+  "/get-by-studentId/:studentId",
+  authenticateTokenLevelTwo,
+  getByStudentId
+);
+penalty.post("/", authenticateTokenLevelTwo, managePenaltiesPerm, create);
+penalty.post(
+  "/student-penalties",
+  authenticateTokenLevelTwo,
+  managePenaltiesPerm,
+  getStudentsPenalties
+);
 // penalty.delete("/:id", deleteById);
 // penalty.put("/", update);
 

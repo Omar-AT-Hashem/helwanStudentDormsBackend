@@ -1,5 +1,10 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import authenticateTokenLevelOne from "../../../middleware/authenticateTokenLevelOne.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import houseStudentsPerm from "../../../middleware/perms/houseStudentsPerm.js";
+import unHouseStudentsPerm from "../../../middleware/perms/unHouseStudentsPerm.js";
+import editHousingResourcesPerm from "../../../middleware/perms/editHousingResourcesPerm.js";
 
 const bed = Router();
 
@@ -161,14 +166,22 @@ async function deleteById(req, res) {
 }
 //----------------------------------------------------------------
 
-bed.get("/", index);
-bed.post("/", create);
-bed.post("/occupy", occupy);
-bed.delete("/:id", deleteById);
-bed.put("/", update);
-bed.put("/unoccupy", unOccupy);
-bed.put("/unoccupy-all", unOccupyAll);
-
-
+bed.get("/", authenticateTokenLevelOne, index);
+bed.post("/", authenticateTokenLevelTwo, editHousingResourcesPerm, create);
+bed.post("/occupy", authenticateTokenLevelTwo, houseStudentsPerm, occupy);
+bed.delete(
+  "/:id",
+  authenticateTokenLevelTwo,
+  editHousingResourcesPerm,
+  deleteById
+);
+bed.put("/", authenticateTokenLevelTwo, update);
+bed.put("/unoccupy", authenticateTokenLevelTwo, unHouseStudentsPerm, unOccupy);
+bed.put(
+  "/unoccupy-all",
+  authenticateTokenLevelTwo,
+  unHouseStudentsPerm,
+  unOccupyAll
+);
 
 export default bed;

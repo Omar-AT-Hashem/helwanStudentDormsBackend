@@ -7,7 +7,8 @@ import multer from "multer";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import XLSX from "xlsx";
-
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import uploadMealsPerm from "../../../middleware/perms/uploadMealsPerm.js";
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ async function recieveMeals(req, res) {
     var recievedMealsData = XLSX.utils.sheet_to_json(
       recievedMealsFile.Sheets[sheet_name_list[0]]
     );
-    
+
     recievedMealsData.forEach(async (recievedMeal) => {
       const { nationalId, breakfast, lunch, dinner, date } = recievedMeal;
       await conn.awaitQuery(
@@ -34,13 +35,17 @@ async function recieveMeals(req, res) {
       );
     });
 
-     return   res.status(200).json({ message: "Meals recieved successfully" });
+    return res.status(200).json({ message: "Meals recieved successfully" });
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
 
-recievedMeal.post("/recieve-meals", upload.single("recievedMeals"),
+recievedMeal.post(
+  "/recieve-meals",
+  authenticateTokenLevelTwo,
+  uploadMealsPerm,
+  upload.single("recievedMeals"),
   recieveMeals
 );
 

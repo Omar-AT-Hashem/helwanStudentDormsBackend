@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const tokenSecret = process.env.TOKEN_SECRET_LEVELONE;
+const tokenSecretOne = process.env.TOKEN_SECRET_LEVELONE;
+const tokenSecretTwo = process.env.TOKEN_SECRET_LEVELTWO;
 
 function authenticateTokenLevelOne(req, res, next) {
   if (req.header("Authorization")) {
@@ -14,13 +15,19 @@ function authenticateTokenLevelOne(req, res, next) {
         .json({ message: "Access denied. No token provided" });
     }
 
-    jwt.verify(token, tokenSecret, (err, decoded) => {
+    jwt.verify(token, tokenSecretOne, (err, decoded) => {
       if (err) {
-        return res.status(403).json({ message: "Invalid token" });
+        jwt.verify(token, tokenSecretTwo, (err, decoded) => {
+          if (err) {
+            return res.status(403).json({ message: "Invalid token" });
+          } else {
+            req.adminId = decoded.userId;
+            return next();
+          }
+        });
+      } else {
+        return next();
       }
-
-      req.adminId = decoded.userId;
-      next();
     });
   } else {
     return res

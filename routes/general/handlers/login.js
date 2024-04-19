@@ -43,7 +43,30 @@ async function validate(req, res) {
 
       let token = null;
       if (userType === "admin") {
-        token = jwt.sign({ userId: user[0].id }, tokenSecretLevelTwo);
+        token = jwt.sign(
+          {
+            userId: user[0].id,
+            superAdmin: user[0].superAdmin,
+            editStudentData: user[0].editStudentData,
+            applicationApprovals: user[0].applicationApprovals,
+            houseStudents: user[0].houseStudents,
+            unHouseStudents: user[0].unHouseStudents,
+            managePenalties: user[0].managePenalties,
+            suspendStudent: user[0].suspendStudent,
+            manageAbscence: user[0].manageAbscence,
+            manageStudentFees: user[0].manageStudentFees,
+            manageBlockMeals: user[0].manageBlockMeals,
+            uploadStudentImages: user[0].uploadStudentImages,
+            editApplicationDates: user[0].editApplicationDates,
+            editInstructions: user[0].editInstructions,
+            uploadMeals: user[0].uploadMeals,
+            editFees: user[0].editFees,
+            editHousingResources: user[0].editHousingResources,
+            studentEvaluation: user[0].studentEvaluation,
+            systemWash: user[0].systemWash,
+          },
+          tokenSecretLevelTwo
+        );
       } else if (userType === "student") {
         token = jwt.sign({ userId: user[0].id }, tokenSecretLevelOne);
       } else {

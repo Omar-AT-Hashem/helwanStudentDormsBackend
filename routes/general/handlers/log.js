@@ -1,5 +1,6 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
 
 const log = Router();
 
@@ -70,7 +71,7 @@ async function create(req, res) {
 
 //----------------------------------------------------------------
 
-log.get("/", index);
-log.post("/", create);
+log.get("/",authenticateTokenLevelTwo, index);
+log.post("/",authenticateTokenLevelTwo, create);
 
 export default log;

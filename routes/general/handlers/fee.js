@@ -1,5 +1,7 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import editFeesPerm from "../../../middleware/perms/editFeesPerm.js";
 
 const fee = Router();
 
@@ -80,9 +82,9 @@ async function deleteById(req, res) {
 
 //----------------------------------------------------------------
 
-fee.get("/", index);
-fee.post("/", create);
-fee.delete("/:id", deleteById);
-fee.put("/", update);
+fee.get("/", authenticateTokenLevelTwo, index);
+fee.post("/", authenticateTokenLevelTwo, editFeesPerm, create);
+fee.delete("/:id", authenticateTokenLevelTwo, editFeesPerm, deleteById);
+fee.put("/", authenticateTokenLevelTwo, editFeesPerm, update);
 
 export default fee;

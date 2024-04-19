@@ -1,5 +1,8 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import authenticateTokenLevelOne from "../../../middleware/authenticateTokenLevelOne.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import editHousingResourcesPerm from "../../../middleware/perms/editHousingResourcesPerm.js";
 
 const building = Router();
 
@@ -40,27 +43,27 @@ async function create(req, res) {
 
 //----------------------------------------------------------------
 
-async function update(req, res) {
-  try {
-    const { id, name, governorate } = req.body;
+// async function update(req, res) {
+//   try {
+//     const { id, name, governorate } = req.body;
 
-    if (!governorate || !name || !id) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all the required fields" });
-    }
+//     if (!governorate || !name || !id) {
+//       return res
+//         .status(400)
+//         .json({ message: "Please provide all the required fields" });
+//     }
 
-    await conn.awaitQuery(
-      "UPDATE categories SET name = ?, governorate = ? WHERE id = ?",
-      [name, governorate, id]
-    );
+//     await conn.awaitQuery(
+//       "UPDATE categories SET name = ?, governorate = ? WHERE id = ?",
+//       [name, governorate, id]
+//     );
 
-    res.status(201).json({ message: "instruction Updated" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-}
+//     res.status(201).json({ message: "instruction Updated" });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// }
 
 //----------------------------------------------------------------
 
@@ -77,9 +80,14 @@ async function deleteById(req, res) {
 }
 //----------------------------------------------------------------
 
-building.get("/", index);
-building.post("/", create);
-building.delete("/:id", deleteById);
-building.put("/", update);
+building.get("/", authenticateTokenLevelOne, index);
+building.post("/", authenticateTokenLevelTwo, editHousingResourcesPerm, create);
+building.delete(
+  "/:id",
+  authenticateTokenLevelTwo,
+  editHousingResourcesPerm,
+  deleteById
+);
+// building.put("/", update);
 
 export default building;

@@ -1,5 +1,8 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import authenticateTokenLevelOne from "../../../middleware/authenticateTokenLevelOne.js";
+import editApplicationDatesPerm from "../../../middleware/perms/editApplicationDatesPerm.js";
 
 const applicationDate = Router();
 
@@ -84,9 +87,24 @@ async function deleteById(req, res) {
 
 //----------------------------------------------------------------
 
-applicationDate.get("/", index);
-applicationDate.post("/", create);
-applicationDate.delete("/:id", deleteById);
-applicationDate.put("/", update);
+applicationDate.get(
+  "/",
+  authenticateTokenLevelOne,
+  editApplicationDatesPerm,
+  index
+);
+applicationDate.post(
+  "/",
+  authenticateTokenLevelTwo,
+  editApplicationDatesPerm,
+  create
+);
+applicationDate.delete("/:id", authenticateTokenLevelTwo, deleteById);
+applicationDate.put(
+  "/",
+  authenticateTokenLevelTwo,
+  editApplicationDatesPerm,
+  update
+);
 
 export default applicationDate;

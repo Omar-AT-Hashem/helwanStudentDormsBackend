@@ -1,5 +1,9 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
+import editFeesPerm from "../../../middleware/perms/editFeesPerm.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import editHousingResourcesPerm from "../../../middleware/perms/editHousingResourcesPerm.js";
+import authenticateTokenLevelOne from "../../../middleware/authenticateTokenLevelOne.js";
 
 const floor = Router();
 
@@ -20,7 +24,7 @@ async function create(req, res) {
   try {
     const { number, buildingId } = req.body;
 
-    if (!number|| !buildingId) {
+    if (!number || !buildingId) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
@@ -40,28 +44,6 @@ async function create(req, res) {
 
 //----------------------------------------------------------------
 
-async function update(req, res) {
-  try {
-    const { id, name, governorate } = req.body;
-
-    if (!governorate || !name || !id) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all the required fields" });
-    }
-
-    await conn.awaitQuery(
-      "UPDATE categories SET name = ?, governorate = ? WHERE id = ?",
-      [name, governorate, id]
-    );
-
-    res.status(201).json({ message: "instruction Updated" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-}
-
 //----------------------------------------------------------------
 
 async function deleteById(req, res) {
@@ -77,9 +59,8 @@ async function deleteById(req, res) {
 }
 //----------------------------------------------------------------
 
-floor.get("/", index);
-floor.post("/", create);
-floor.delete("/:id", deleteById);
-floor.put("/", update);
+floor.get("/", authenticateTokenLevelOne, index);
+floor.post("/", authenticateTokenLevelTwo, editHousingResourcesPerm, create);
+floor.delete("/:id", authenticateTokenLevelTwo, editFeesPerm, deleteById);
 
 export default floor;

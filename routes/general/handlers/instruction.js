@@ -1,6 +1,8 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
-
+import authenticateTokenLevelOne from "../../../middleware/authenticateTokenLevelOne.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import editInstructionsPerm from "../../../middleware/perms/editInstructionsPerm.js";
 
 const instructions = Router();
 
@@ -83,9 +85,14 @@ async function deleteById(req, res) {
 
 //----------------------------------------------------------------
 
-instructions.get("/", index);
-instructions.post("/", create);
-instructions.put("/", update);
-instructions.delete("/:id", deleteById);
+instructions.get("/", authenticateTokenLevelOne, index);
+instructions.post("/", authenticateTokenLevelTwo, editInstructionsPerm, create);
+instructions.put("/", authenticateTokenLevelTwo, editInstructionsPerm, update);
+instructions.delete(
+  "/:id",
+  authenticateTokenLevelTwo,
+  editInstructionsPerm,
+  deleteById
+);
 
 export default instructions;

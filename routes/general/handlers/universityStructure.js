@@ -6,8 +6,8 @@ import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-
 import fs from "fs";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
 var obj = JSON.parse(fs.readFileSync("./colleges.json", "utf8"));
 
 dotenv.config();
@@ -35,6 +35,10 @@ async function getStructure(req, res) {
 }
 
 universityStructure.get("/get-faculties", getFaculties);
-universityStructure.get("/get-structure", getStructure);
+universityStructure.get(
+  "/get-structure",
+  authenticateTokenLevelTwo,
+  getStructure
+);
 
 export default universityStructure;

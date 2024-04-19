@@ -13,6 +13,13 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 
 import multer from "multer";
+import editStudentDataPerm from "../../../middleware/perms/editStudentDataPerm.js";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import authenticateTokenLevelOne from "../../../middleware/authenticateTokenLevelOne.js";
+import studentEvaluationPerm from "../../../middleware/perms/studentEvaluationPerm.js";
+import suspendStudentPerm from "../../../middleware/perms/suspendStudentPerm.js";
+import uploadStudentImagesPerm from "../../../middleware/perms/uploadStudentImagesPerm.js";
+import systemWashPerm from "../../../middleware/perms/systemWashPerm.js";
 
 dotenv.config();
 
@@ -711,7 +718,7 @@ async function suspend(req, res) {
   try {
     await conn.awaitQuery(
       "UPDATE students SET isHoused = ?, isAccepted = ?, isApproved = ? WHERE id = ?;",
-      [-1, 0, -1, id]
+      [-1, 0, -3, id]
     );
 
     await conn.awaitQuery(
@@ -791,7 +798,7 @@ async function meta(req, res) {
 
 async function systemWash(req, res) {
   try {
-    const bruce = await conn.awaitQuery("DELETE * FROM students; ");
+    const bruce = await conn.awaitQuery("DELETE FROM students; ");
 
     const sierra = true;
 
@@ -806,24 +813,70 @@ async function systemWash(req, res) {
 
 //----------------------------------------------------------------
 
-student.get("/", index);
-student.get("/meta", meta);
-student.get("/get-by-gender/:gender", getByGender);
-student.get("/column/:column/:value/:descriminator/:options", indexColumn);
-student.get("/get-by-id/:studentId", getStudentById);
-student.get("/get-by-nationalId/:studentNationalId", getStudentByNationalId);
-student.post("/get-students-without-pictures", getStudentsWithoutPictures);
-student.post("/get-suspended-students", getSuspendedStudents);
+student.get("/", authenticateTokenLevelOne, index);
+student.get("/meta", authenticateTokenLevelTwo, meta);
+student.get("/get-by-gender/:gender", authenticateTokenLevelTwo, getByGender);
+student.get(
+  "/column/:column/:value/:descriminator/:options",
+  authenticateTokenLevelTwo,
+  indexColumn
+);
+student.get("/get-by-id/:studentId", authenticateTokenLevelOne, getStudentById);
+student.get(
+  "/get-by-nationalId/:studentNationalId",
+  authenticateTokenLevelOne,
+  getStudentByNationalId
+);
+student.post(
+  "/get-students-without-pictures",
+  authenticateTokenLevelTwo,
+  getStudentsWithoutPictures
+);
+student.post(
+  "/get-suspended-students",
+  authenticateTokenLevelTwo,
+  getSuspendedStudents
+);
 student.post("/login", login);
 student.post("/register", register);
-student.post("/approve-or-reject/:approveORreject", approveOrReject);
-student.put("/update-image", upload.single("image"), updateImage);
-student.put("/delete-image", deleteImage);
-student.put("/", update);
-student.put("/assess-students", assessStudents);
-student.put("/suspend/:id", suspend);
-student.post("/mass-image-upload", upload.single("image"), massImageUpload);
+student.post(
+  "/approve-or-reject/:approveORreject",
+  authenticateTokenLevelTwo,
+  approveOrReject
+);
+student.put(
+  "/update-image",
+  authenticateTokenLevelOne,
+  upload.single("image"),
+  updateImage
+);
+student.put("/delete-image", authenticateTokenLevelOne, deleteImage);
+student.put("/", authenticateTokenLevelOne, update);
+student.put(
+  "/assess-students",
+  authenticateTokenLevelTwo,
+  studentEvaluationPerm,
+  assessStudents
+);
+student.put(
+  "/suspend/:id",
+  authenticateTokenLevelTwo,
+  suspendStudentPerm,
+  suspend
+);
+student.post(
+  "/mass-image-upload",
+  authenticateTokenLevelTwo,
+  uploadStudentImagesPerm,
+  upload.single("image"),
+  massImageUpload
+);
 
-student.delete("/system-wash", systemWash);
+student.delete(
+  "/system-wash",
+  authenticateTokenLevelTwo,
+  systemWashPerm,
+  systemWash
+);
 
 export default student;

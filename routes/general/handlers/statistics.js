@@ -1,6 +1,7 @@
 import { Router } from "express";
 import conn from "../../../config/db.js";
 import { compareSync } from "bcrypt";
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
 
 const statistics = Router();
 
@@ -140,8 +141,6 @@ async function getHousedStats(req, res) {
     const totalFemalesHoused = housedFemalesNormal + housedFemalesSpecial;
 
     const totalMalesHoused = housedMalesNormal + housedMalesSpecial;
-
-   
 
     return res.status(200).json({
       title: "الساكنين",
@@ -329,7 +328,6 @@ async function getMealsStats(req, res) {
         },
       ],
     });
-
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }
@@ -337,9 +335,17 @@ async function getMealsStats(req, res) {
 
 //----------------------------------------------------------------
 
-statistics.get("/applicants-statistics", getApplicantStats);
-statistics.get("/housed-statistics", getHousedStats);
-statistics.get("/housing-statistics", getHousingStats);
-statistics.get("/meals-statistics", getMealsStats);
+statistics.get(
+  "/applicants-statistics",
+  authenticateTokenLevelTwo,
+  getApplicantStats
+);
+statistics.get("/housed-statistics", authenticateTokenLevelTwo, getHousedStats);
+statistics.get(
+  "/housing-statistics",
+  authenticateTokenLevelTwo,
+  getHousingStats
+);
+statistics.get("/meals-statistics", authenticateTokenLevelTwo, getMealsStats);
 
 export default statistics;

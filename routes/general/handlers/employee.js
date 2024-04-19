@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import superAdminPerm from "../../../middleware/perms/superAdminPerm.js";
 
 dotenv.config();
 
@@ -133,48 +134,48 @@ async function register(req, res) {
 
 //----------------------------------------------------------------
 
-async function login(req, res) {
-  const { username, password } = req.body;
+// async function login(req, res) {
+//   const { username, password } = req.body;
 
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please provide a username and password" });
-  }
+//   if (!username || !password) {
+//     return res
+//       .status(400)
+//       .json({ message: "Please provide a username and password" });
+//   }
 
-  try {
-    const employee = await conn.awaitQuery(
-      "SELECT * FROM employees WHERE username = ?",
-      [username]
-    );
+//   try {
+//     const employee = await conn.awaitQuery(
+//       "SELECT * FROM employees WHERE username = ?",
+//       [username]
+//     );
 
-    if (employee.length > 0) {
-      const passwordMatch = await bcrypt.compare(
-        password,
-        employee[0].password
-      );
-      if (!passwordMatch) {
-        return res
-          .status(401)
-          .json({ message: "Your username or password are incorrect" });
-      }
-      const token = jwt.sign({ userId: employee[0].id }, tokenSecret);
-      const returnedEmployee = {
-        id: employee[0].id,
-        username: employee[0].username,
-        name: employee[0].name,
-        token: token,
-      };
-      return res.status(200).json(returnedEmployee);
-    }
-    return res
-      .status(401)
-      .json({ message: "Your username or password are incorrect" });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Something Went Wrong" });
-  }
-}
+//     if (employee.length > 0) {
+//       const passwordMatch = await bcrypt.compare(
+//         password,
+//         employee[0].password
+//       );
+//       if (!passwordMatch) {
+//         return res
+//           .status(401)
+//           .json({ message: "Your username or password are incorrect" });
+//       }
+//       const token = jwt.sign({ userId: employee[0].id }, tokenSecret);
+//       const returnedEmployee = {
+//         id: employee[0].id,
+//         username: employee[0].username,
+//         name: employee[0].name,
+//         token: token,
+//       };
+//       return res.status(200).json(returnedEmployee);
+//     }
+//     return res
+//       .status(401)
+//       .json({ message: "Your username or password are incorrect" });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ message: "Something Went Wrong" });
+//   }
+// }
 
 //----------------------------------------------------------------
 
@@ -291,20 +292,33 @@ async function update(req, res) {
 }
 
 //----------------------------------------------------------------
+async function deleteById(req, res) {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const permissions = await conn.awaitQuery(
+      "DELETE FROM employees WHERE id = ?",
+      [id]
+    );
+    res.status(200).send("deleted");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+}
+//----------------------------------------------------------------
 
 async function verifyTokenPageLoad(req, res) {
   res.status(200).json({ message: "Token Verified" });
 }
 
-employee.get("/", index);
-employee.get("/permissions/:id", getPermissions);
-employee.post("/login", login);
-employee.post("/register", register);
-employee.put("/", update);
-employee.post(
-  "/verify-token-page-load",
-  authenticateTokenLevelTwo,
-  verifyTokenPageLoad
-);
+employee.get("/", authenticateTokenLevelTwo, index);
+employee.get("/permissions/:id", authenticateTokenLevelTwo, getPermissions);
+// employee.post("/login", login);
+employee.post("/register", authenticateTokenLevelTwo, superAdminPerm, register);
+employee.put("/", authenticateTokenLevelTwo, superAdminPerm, update);
+employee.post("/verify-token-page-load", verifyTokenPageLoad);
+
+employee.delete("/:id", authenticateTokenLevelTwo, superAdminPerm, deleteById);
 
 export default employee;

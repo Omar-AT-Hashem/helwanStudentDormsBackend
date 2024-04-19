@@ -5,7 +5,8 @@ import conn from "../../../config/db.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import authenticateTokenLevelTwo from "../../../middleware/authenticateTokenLevelTwo.js";
+import authenticateTokenLevelOne from "../../../middleware/authenticateTokenLevelOne.js";
 
 dotenv.config();
 
@@ -205,9 +206,21 @@ async function traceStudentHousing(req, res) {
 
 // ------------------------------------------------------------------------------
 
-housing.get("/", getHousingData);
-housing.get("/towns-buildings-floors", getTownsBuildingsFloors);
-housing.get("/floor-rooms-beds/:floorId", getFloorRoomsBeds);
-housing.get("/trace-student/:studentId", traceStudentHousing);
+housing.get("/", authenticateTokenLevelTwo, getHousingData);
+housing.get(
+  "/towns-buildings-floors",
+  authenticateTokenLevelTwo,
+  getTownsBuildingsFloors
+);
+housing.get(
+  "/floor-rooms-beds/:floorId",
+  authenticateTokenLevelTwo,
+  getFloorRoomsBeds
+);
+housing.get(
+  "/trace-student/:studentId",
+  authenticateTokenLevelOne,
+  traceStudentHousing
+);
 
 export default housing;
