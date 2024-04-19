@@ -757,7 +757,7 @@ async function getSuspendedStudents(req, res) {
   try {
     const data = await conn.awaitQuery(
       "SELECT id, name, nationalId, academicYear FROM students WHERE isHoused = ? AND isAccepted = ? AND isApproved = ? AND gender = ?",
-      [-1, 0, -1, gender]
+      [-1, 0, -3, gender]
     );
 
     return res.status(201).json(data);
