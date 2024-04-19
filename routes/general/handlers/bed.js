@@ -122,6 +122,32 @@ async function unOccupy(req, res) {
 
 //----------------------------------------------------------------
 
+async function unOccupyAll(req, res) {
+  try {
+    const { studentId, bedId } = req.body;
+
+    if (!studentId || !bedId) {
+      return res
+        .status(400)
+        .json({ message: "Please provide all the required fields" });
+    }
+
+    await conn.awaitQuery("UPDATE beds SET isOccupied = ?, occupant = ?", [
+      0,
+      null,
+    ]);
+
+    await conn.awaitQuery("UPDATE students SET isHoused = ?", [0]);
+
+    res.status(201).json({ message: "Student Housed" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+//----------------------------------------------------------------
+
 async function deleteById(req, res) {
   const id = req.params.id;
   try {
@@ -141,5 +167,8 @@ bed.post("/occupy", occupy);
 bed.delete("/:id", deleteById);
 bed.put("/", update);
 bed.put("/unoccupy", unOccupy);
+bed.put("/unoccupy-all", unOccupyAll);
+
+
 
 export default bed;
