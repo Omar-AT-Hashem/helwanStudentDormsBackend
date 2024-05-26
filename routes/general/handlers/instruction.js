@@ -85,7 +85,7 @@ async function deleteById(req, res) {
 
 //----------------------------------------------------------------
 
-instructions.get("/", authenticateTokenLevelOne, index);
+instructions.get("/", index);
 instructions.post("/", authenticateTokenLevelTwo, editInstructionsPerm, create);
 instructions.put("/", authenticateTokenLevelTwo, editInstructionsPerm, update);
 instructions.delete(

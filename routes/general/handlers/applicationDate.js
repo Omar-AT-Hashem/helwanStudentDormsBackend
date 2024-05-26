@@ -87,7 +87,7 @@ async function deleteById(req, res) {
 
 //----------------------------------------------------------------
 
-applicationDate.get("/", authenticateTokenLevelOne, index);
+applicationDate.get("/",  index);
 applicationDate.post(
   "/",
   authenticateTokenLevelTwo,
