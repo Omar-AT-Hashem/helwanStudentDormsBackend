@@ -53,6 +53,7 @@ async function register(req, res) {
       editHousingResources,
       studentEvaluation,
       systemWash,
+      deleteStudent
     } = req.body;
 
     if (
@@ -76,7 +77,8 @@ async function register(req, res) {
       editFees === undefined ||
       editHousingResources === undefined ||
       studentEvaluation === undefined ||
-      systemWash === undefined
+      systemWash === undefined ||
+      deleteStudent === undefined
     ) {
       return res
         .status(400)
@@ -97,7 +99,7 @@ async function register(req, res) {
 
     // Create a new user
     const newEmployee = await conn.awaitQuery(
-      "INSERT INTO employees (username, name, password, superAdmin, editStudentData, applicationApprovals,  houseStudents, unHouseStudents, managePenalties, suspendStudent, manageAbscence, manageStudentFees, manageBlockMeals, uploadStudentImages, editApplicationDates, editInstructions, uploadMeals, editFees,  editHousingResources,  studentEvaluation,  systemWash) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO employees (username, name, password, superAdmin, editStudentData, applicationApprovals,  houseStudents, unHouseStudents, managePenalties, suspendStudent, manageAbscence, manageStudentFees, manageBlockMeals, uploadStudentImages, editApplicationDates, editInstructions, uploadMeals, editFees,  editHousingResources,  studentEvaluation,  systemWash, deleteStudent) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         username,
         name,
@@ -120,6 +122,7 @@ async function register(req, res) {
         editHousingResources,
         studentEvaluation,
         systemWash,
+        deleteStudent
       ]
     );
 
@@ -183,7 +186,7 @@ async function getPermissions(req, res) {
   try {
     const id = req.params.id;
     const permissions = await conn.awaitQuery(
-      "SELECT superAdmin, editStudentData, applicationApprovals, houseStudents, unHouseStudents, managePenalties,   suspendStudent, manageAbscence, manageStudentFees, manageBlockMeals, uploadStudentImages, editApplicationDates, editInstructions, uploadMeals, editFees, editHousingResources, studentEvaluation, systemWash FROM employees WHERE id = ?",
+      "SELECT superAdmin, editStudentData, applicationApprovals, houseStudents, unHouseStudents, managePenalties,   suspendStudent, manageAbscence, manageStudentFees, manageBlockMeals, uploadStudentImages, editApplicationDates, editInstructions, uploadMeals, editFees, editHousingResources, studentEvaluation, systemWash, deleteStudent FROM employees WHERE id = ?",
       [id]
     );
     if (permissions.length > 0) {
@@ -223,6 +226,7 @@ async function update(req, res) {
       editHousingResources,
       studentEvaluation,
       systemWash,
+      deleteStudent
     } = req.body;
 
     if (
@@ -247,18 +251,17 @@ async function update(req, res) {
       editFees === undefined ||
       editHousingResources === undefined ||
       studentEvaluation === undefined ||
-      systemWash === undefined
+      systemWash === undefined ||
+      deleteStudent === undefined
     ) {
       return res
         .status(400)
         .json({ message: "Please provide all the required fields" });
     }
 
-    // Check if the user already exists
 
-    // Create a new user
     const newEmployee = await conn.awaitQuery(
-      "UPDATE employees SET superAdmin = ?, editStudentData = ?, applicationApprovals = ?,  houseStudents = ?, unHouseStudents = ?, managePenalties = ?, suspendStudent = ?, manageAbscence = ?, manageStudentFees = ?, manageBlockMeals = ?, uploadStudentImages = ?, editApplicationDates = ?, editInstructions = ?, uploadMeals = ?, editFees = ?,  editHousingResources = ?,  studentEvaluation = ?,  systemWash = ? WHERE id = ?",
+      "UPDATE employees SET superAdmin = ?, editStudentData = ?, applicationApprovals = ?,  houseStudents = ?, unHouseStudents = ?, managePenalties = ?, suspendStudent = ?, manageAbscence = ?, manageStudentFees = ?, manageBlockMeals = ?, uploadStudentImages = ?, editApplicationDates = ?, editInstructions = ?, uploadMeals = ?, editFees = ?,  editHousingResources = ?,  studentEvaluation = ?,  systemWash = ?, deleteStudent = ? WHERE id = ?",
       [
         superAdmin,
         editStudentData,
@@ -278,6 +281,7 @@ async function update(req, res) {
         editHousingResources,
         studentEvaluation,
         systemWash,
+        deleteStudent,
         id,
       ]
     );

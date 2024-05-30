@@ -79,6 +79,12 @@ async function occupy(req, res) {
         .json({ message: "Please provide all the required fields" });
     }
 
+    const studentHoused = await conn.awaitQuery("SELECT * FROM beds WHERE occupant = ?", [studentId])
+
+    if (studentHoused.length > 0) {
+      return res.status(412).json({ message: "Student already housed" });
+    }
+
     await conn.awaitQuery(
       "UPDATE beds SET isOccupied = ?, occupant = ? WHERE id = ?",
       [1, studentId, bedId]

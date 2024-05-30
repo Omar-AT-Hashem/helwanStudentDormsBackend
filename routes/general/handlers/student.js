@@ -20,6 +20,7 @@ import studentEvaluationPerm from "../../../middleware/perms/studentEvaluationPe
 import suspendStudentPerm from "../../../middleware/perms/suspendStudentPerm.js";
 import uploadStudentImagesPerm from "../../../middleware/perms/uploadStudentImagesPerm.js";
 import systemWashPerm from "../../../middleware/perms/systemWashPerm.js";
+import deleteStudentPerm from "../../../middleware/perms/deleteStudentPerm.js";
 
 dotenv.config();
 
@@ -108,6 +109,8 @@ async function getByGender(req, res) {
     return res.status(500).json({ message: "Something went wrong" });
   }
 }
+
+//----------------------------------------------------------------
 
 async function register(req, res) {
   try {
@@ -336,6 +339,32 @@ async function login(req, res) {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 }
+//----------------------------------------------------------------
+
+async function deleteById(req, res) {
+  const studentId = req.params.id;
+  try {
+    await conn.awaitQuery("DELETE FROM students WHERE id = ?", [studentId]);
+
+    const occupiesBed = await conn.awaitQuery(
+      "SELECT * FROM beds WHERE occupant = ?",
+      [studentId]
+    );
+
+    if (occupiesBed.length > 0) {
+      await conn.awaitQuery(
+        "UPDATE beds SET isOccupied = ?, occupant = ? WHERE occupant = ?",
+        [0, null, studentId]
+      );
+    }
+    return res.status(200).json({
+      message: `Student with with Id = ${studentId} was deleted successfully`,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
 //----------------------------------------------------------------
 
 async function getStudentById(req, res) {
@@ -802,6 +831,11 @@ async function systemWash(req, res) {
 
     const sierra = true;
 
+    await conn.awaitQuery("UPDATE beds SET isOccupied = ?, occupant = ?", [
+      0,
+      null,
+    ]);
+
     res.status(200).json({
       message: "system washed",
     });
@@ -870,6 +904,13 @@ student.post(
   uploadStudentImagesPerm,
   upload.single("image"),
   massImageUpload
+);
+
+student.delete(
+  "/:id",
+  authenticateTokenLevelTwo,
+  deleteStudentPerm,
+  deleteById
 );
 
 student.delete(
