@@ -514,6 +514,18 @@ async function updateImage(req, res) {
     const { id } = req.body;
     const imagePath = `/${image.filename}`;
 
+    const currentImage = await conn.awaitQuery("Select image FROM students WHERE id = ?;", [
+      id,
+    ]);
+
+    if(currentImage[0].image){
+    if(fs.existsSync(`../../../../helwanStudentDormsFrontend/public${currentImage[0].image}`)){
+
+      fs.unlinkSync(`../../../../helwanStudentDormsFrontend/public${currentImage[0].image}`)
+    }
+  }
+
+  
     await conn.awaitQuery("UPDATE students SET image = ?  WHERE id = ?;", [
       imagePath,
       id,
@@ -532,10 +544,22 @@ async function deleteImage(req, res) {
   try {
     const imagePath = null;
     const { id } = req.body;
+    
+    const currentImage = await conn.awaitQuery("Select image FROM students WHERE id = ?;", [
+      id,
+    ]);
+
+    if(currentImage[0].image){
+    if(fs.existsSync(`../../../../helwanStudentDormsFrontend/public${currentImage[0].image}`)){
+
+      fs.unlinkSync(`../../../../helwanStudentDormsFrontend/public${currentImage[0].image}`)
+    }
+  }
     await conn.awaitQuery("UPDATE students SET image = ?  WHERE id = ?;", [
       imagePath,
       id,
     ]);
+
     res.status(201).json({ message: "student Updated" });
   } catch (error) {
     console.error(error);

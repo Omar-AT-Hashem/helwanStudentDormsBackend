@@ -308,6 +308,7 @@ async function getMealsStats(req, res) {
     const recievedBreakfast = meals.filter(
       (meal) => meal.breakfast == 1
     ).length;
+
     const recievedLunch = meals.filter((meal) => meal.lunch == 1).length;
     const recievedDinner = meals.filter((meal) => meal.dinner == 1).length;
 
