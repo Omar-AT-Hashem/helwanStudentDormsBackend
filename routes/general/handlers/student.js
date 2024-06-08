@@ -850,7 +850,7 @@ async function meta(req, res) {
 
 async function systemWash(req, res) {
   try {
-    const bruce = await conn.awaitQuery("DELETE FROM students; ");
+    const bruce = await conn.awaitQuery("DELETE FROM students");
 
     const sierra = true;
 
@@ -936,7 +936,7 @@ student.delete(
   deleteById
 );
 
-student.delete(
+student.put(
   "/system-wash",
   authenticateTokenLevelTwo,
   systemWashPerm,
