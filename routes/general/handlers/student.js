@@ -169,7 +169,6 @@ async function register(req, res) {
       !residence ||
       !addressDetails ||
       !highschoolSpecialization ||
-      !academicYear ||
       !grade ||
       !accomodationType ||
       !password
@@ -628,20 +627,20 @@ async function assessStudents(req, res) {
     );
 
     const malesNormalBeds = await conn.awaitQuery(
-      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
-      ["سكن عادي", "M"]
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?  AND isOccupied = ?",
+      ["سكن عادي", "M",0]
     );
     const femalesNormalBeds = await conn.awaitQuery(
-      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
-      ["سكن عادي", "F"]
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ? AND isOccupied = ?",
+      ["سكن عادي", "F",0]
     );
     const malesSpecialBeds = await conn.awaitQuery(
-      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
-      ["سكن مميز", "M"]
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ? AND isOccupied = ?",
+      ["سكن مميز", "M",0]
     );
     const femalesSpecialBeds = await conn.awaitQuery(
-      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ?",
-      ["سكن مميز", "F"]
+      "SELECT *, floors.id as flrId, rooms.id as rmId, beds.id as bdId, buildings.id as bldId, buildings.type as bldType, rooms.type as rmType FROM beds INNER JOIN rooms ON rooms.id = beds.roomId INNER JOIN floors ON floors.id = rooms.floorId INNER JOIN buildings on buildings.id = floors.buildingId WHERE rooms.type = ? AND buildings.type = ? AND isOccupied = ?",
+      ["سكن مميز", "F",0]
     );
 
     let selectedMalesNormal = null;
